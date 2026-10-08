@@ -32,8 +32,18 @@
 #define PI_BYTES      (1024 * 1024) // one PI DMA pass
 #define ARENA_BYTES   (4 * 1024 * 1024 + 256 * 1024) // 1 MiB aligned; everything placed inside
 #define CPU_OFF       (1024 * 1024) // the CPU buffer: a 1 MiB block with room below and above
-#define SCRATCH_OFF   (2048 * 1024) // default RDP fill target: a different 1 MiB block
-#define SP_OFF        (2560 * 1024) // default RSP DMA region: another one
+#define SCRATCH_OFF   (2048 * 1024) // default RDP color target: a different 1 MiB block
+#define ZBUF_OFF      (SCRATCH_OFF + 160 * 1024)   // the RDP's Z-buffer, same block as its color target
+#define TEX_OFF       (SCRATCH_OFF + 320 * 1024)   // the RDP's texture source (64x32 RGBA16), same block
+#define SP_OFF        (3072 * 1024) // default RSP DMA region: a third block
+#define PI_OFF        (3328 * 1024) // the PI's destination, 1 MiB at the top of the arena
+#define RDP_CMD_QWORDS (32 * 1024)  // 256 KiB of RDP commands: enough for ~16k LOAD_TILEs
+
+enum { K_FILL, K_LOAD, K_RECTZ, N_KIND };    // what the RDP does in a pass
+static const char *KIND_NAME[] = { "fill", "load", "rectz" };
+#define TEX_W 64
+#define TEX_H 32
+#define TEXEL 0x1234                // the texture source is filled with this RGBA16 value
 #define RUNS          5             // keep the fastest and the mean
 #define SCREEN_W      320
 #define SCREEN_H      240
@@ -60,6 +70,7 @@ typedef struct {
     int  sp_dir, sp_len;    // sp_len 0: no RSP DMA; dir 0 read, 1 write
     bool pi;
     uint32_t rdp_off, sp_off;   // placement in the arena; 0 = the defaults
+    int  rdp_kind;              // K_FILL (0), K_LOAD, K_RECTZ
 } cfg_t;
 
 typedef struct {
@@ -67,7 +78,8 @@ typedef struct {
     uint32_t cpu_ticks_min, cpu_ticks_sum;
     float    win_us_sum;                    // window length (CPU or spin)
     uint32_t sp_dmas_sum;                   // RSP DMAs issued inside the window
-    float    rdp_us_min, rdp_us_sum;        // the fill pass's DP_PIPE_BUSY time
+    float    rdp_us_min, rdp_us_sum;        // the RDP pass's DP_PIPE_BUSY time
+    float    tmem_us_sum;                   // and its DP_TMEM_BUSY time (texture loads)
     int      rdp_started, rdp_busy_after, rdp_timeout;
     float    pi_us_sum;                     // the PI pass, issue to completion
     int      pi_busy_after;
@@ -191,18 +203,78 @@ static inline bool rdp_pipe_busy(void) { return *DP_STATUS & DP_STATUS_PIPE_BUSY
 // RDRAM-hungry thing the RDP does (8 bytes a clock, no texture, no Z). Raw
 // RDP commands; in fill mode the lower-right corner is inclusive, so the
 // rectangle ends at (W-1, H-1) in 10.2 fixed point.
-static void build_fill_list(int layers, void *target) {
-    int n = 0;
+//
+// Three kinds of pass:
+//   K_FILL   n full-screen fill-mode rectangles into `target`: pure writes.
+//   K_LOAD   n LOAD_TILEs of a 64x32 RGBA16 texture (4 KiB each) from TEX_OFF:
+//            pure reads through the TMEM path.
+//   K_RECTZ  the Z-buffer cleared to far, then n full-screen 1-cycle textured
+//            rectangles with Z compare+write, each nearer than the last so
+//            every pixel passes: a colour write, a Z read and a Z write per
+//            pixel, which is what a 3D view costs the bus.
+#define CMD(id) ((uint64_t)(id) << 56)
+#define FMT_RGBA16_SIZ (2ull << 51)
+static const uint64_t SET_SCISSOR_FULL = CMD(0x2D) | ((uint64_t)(SCREEN_W * 4) << 12) | (SCREEN_H * 4);
+static inline uint64_t set_color_image(uint32_t phys) { return CMD(0x3F) | FMT_RGBA16_SIZ | ((uint64_t)(SCREEN_W - 1) << 32) | phys; }
+
+static void build_rdp_list(int kind, int n, void *target) {
+    int k = 0;
     uint32_t addr = PhysicalAddr(target);
+    uint32_t zaddr = PhysicalAddr(arena + ZBUF_OFF), taddr = PhysicalAddr(arena + TEX_OFF);
     uint32_t c16  = color_to_packed16(RGBA32(32, 64, 96, 255));
-    rdp_cmds[n++] = (0x2Full << 56) | (3ull << 52);                                   // SET_OTHER_MODES, cycle type fill
-    rdp_cmds[n++] = (0x3Full << 56) | (2ull << 51) | ((uint64_t)(SCREEN_W - 1) << 32) | addr; // SET_COLOR_IMAGE RGBA16
-    rdp_cmds[n++] = (0x2Dull << 56) | ((uint64_t)(SCREEN_W * 4) << 12) | (SCREEN_H * 4);     // SET_SCISSOR 0,0 .. W,H
-    rdp_cmds[n++] = (0x37ull << 56) | ((uint64_t)c16 << 16) | c16;                    // SET_FILL_COLOR
-    for (int i = 0; i < layers; i++)
-        rdp_cmds[n++] = (0x36ull << 56) | ((uint64_t)((SCREEN_W - 1) * 4) << 44) | ((uint64_t)((SCREEN_H - 1) * 4) << 32); // FILL_RECTANGLE
-    rdp_cmds[n++] = 0x29ull << 56;                                                    // SYNC_FULL
-    rdp_ncmds = n;
+    rdp_cmds[k++] = SET_SCISSOR_FULL;
+    if (kind == K_FILL) {
+        rdp_cmds[k++] = CMD(0x2F) | (3ull << 52);                                      // SET_OTHER_MODES, cycle type fill
+        rdp_cmds[k++] = set_color_image(addr);
+        rdp_cmds[k++] = CMD(0x37) | ((uint64_t)c16 << 16) | c16;                       // SET_FILL_COLOR
+        for (int i = 0; i < n; i++)                                                     // FILL_RECTANGLE, lower-right inclusive in fill mode
+            rdp_cmds[k++] = CMD(0x36) | ((uint64_t)((SCREEN_W - 1) * 4) << 44) | ((uint64_t)((SCREEN_H - 1) * 4) << 32);
+    } else {
+        // tile 0: RGBA16, 64 texels a line = 128 B = 16 qwords, TMEM 0, masks 6/5 so the rect wraps it
+        uint64_t set_tile = CMD(0x35) | FMT_RGBA16_SIZ | (16ull << 41) | (0ull << 24) | (5ull << 14) | (6ull << 4);
+        uint64_t set_tex  = CMD(0x3D) | FMT_RGBA16_SIZ | ((uint64_t)(TEX_W - 1) << 32) | taddr;
+        uint64_t load     = CMD(0x34) | (0ull << 44) | (0ull << 32) | (0ull << 24) | ((uint64_t)((TEX_W - 1) * 4) << 12) | ((TEX_H - 1) * 4);
+        if (kind == K_LOAD) {
+            rdp_cmds[k++] = CMD(0x2F) | SOM_CYCLE_1;
+            rdp_cmds[k++] = set_tex;
+            rdp_cmds[k++] = set_tile;
+            for (int i = 0; i < n; i++) rdp_cmds[k++] = load;
+        } else {
+            rdp_cmds[k++] = CMD(0x2F) | (3ull << 52);                                  // clear Z to far, as a fill
+            rdp_cmds[k++] = set_color_image(zaddr);
+            rdp_cmds[k++] = CMD(0x37) | 0xFFFFFFFFull;
+            rdp_cmds[k++] = CMD(0x36) | ((uint64_t)((SCREEN_W - 1) * 4) << 44) | ((uint64_t)((SCREEN_H - 1) * 4) << 32);
+            rdp_cmds[k++] = CMD(0x27);                                                  // SYNC_PIPE
+            rdp_cmds[k++] = CMD(0x2F) | SOM_CYCLE_1 | SOM_Z_COMPARE | SOM_Z_WRITE | SOM_ZSOURCE_PRIM | SOM_ZMODE_OPAQUE |
+                            SOM_SAMPLE_POINT | SOM_TF0_RGB | SOM_RGBDITHER_NONE | SOM_ALPHADITHER_NONE;
+            rdp_cmds[k++] = CMD(0x3C) | (uint64_t)RDPQ_COMBINER_TEX;                   // SET_COMBINE: colour = TEX0
+            rdp_cmds[k++] = set_color_image(addr);
+            rdp_cmds[k++] = CMD(0x3E) | zaddr;                                          // SET_Z_IMAGE
+            rdp_cmds[k++] = set_tex;
+            rdp_cmds[k++] = set_tile;
+            rdp_cmds[k++] = load;
+            rdp_cmds[k++] = CMD(0x26);                                                  // SYNC_LOAD
+            rdp_cmds[k++] = CMD(0x28);                                                  // SYNC_TILE
+            for (int i = 0; i < n; i++) {
+                uint32_t z = 0xFFF0 - 16 * i;                                           // nearer every layer: all pixels pass
+                rdp_cmds[k++] = CMD(0x2E) | ((uint64_t)z << 16);                        // SET_PRIM_DEPTH
+                rdp_cmds[k++] = CMD(0x24) | ((uint64_t)(SCREEN_W * 4) << 44) | ((uint64_t)(SCREEN_H * 4) << 32) | (0ull << 24); // TEXTURE_RECTANGLE 0,0..W,H tile 0
+                rdp_cmds[k++] = (0x400ull << 16) | 0x400ull;                            // s=0 t=0 dsdx=1.0 dtdy=1.0
+            }
+        }
+    }
+    rdp_cmds[k++] = CMD(0x29);                                                          // SYNC_FULL
+    assertf(k <= RDP_CMD_QWORDS, "RDP list overflow: %d qwords", k);
+    rdp_ncmds = k;
+}
+
+// Bytes a pass moves on the bus, for MB/s.
+static float pass_bytes(int kind, int n) {
+    switch (kind) {
+    case K_FILL:  return (float)n * SCREEN_W * SCREEN_H * 2;
+    case K_LOAD:  return (float)n * TEX_W * TEX_H * 2;
+    default:      return (float)n * SCREEN_W * SCREEN_H * 2 * 3 + SCREEN_W * SCREEN_H * 2;  // colour w, Z r, Z w; plus the clear
+    }
 }
 
 static void rdp_start(void) {
@@ -235,18 +307,32 @@ static float time_fill_alone(void) {
     return best;
 }
 
-// Size the pass so it lasts about RDP_TARGET_US; the CPU windows are shorter.
+// Size each kind of pass so it lasts about RDP_TARGET_US; the CPU windows are shorter.
+static int rdp_n[N_KIND];
+static const int CAL_N[N_KIND]   = { 8, 256, 8 };
+static const int MAX_N[N_KIND]   = { RDP_MAX_LAYERS, 16000, RDP_MAX_LAYERS };
+
 static void calibrate_rdp(void) {
-    build_fill_list(8, arena + SCRATCH_OFF);
-    float us8 = time_fill_alone();
-    has_counters = us8 > 0;
-    int layers = has_counters ? (int)(8.0f * RDP_TARGET_US / us8) : 64;
-    if (layers < 8) layers = 8;
-    if (layers > RDP_MAX_LAYERS) layers = RDP_MAX_LAYERS;
-    rdp_layers = layers;
-    build_fill_list(layers, arena + SCRATCH_OFF);
-    debugf("MB,# fill pass: 8 layers %.1f us -> %d layers (%.1f us per 320x240x16 layer, %.0f MB/s)\n",
-           us8, layers, us8 / 8, has_counters ? SCREEN_W * SCREEN_H * 2 * 8 / us8 : 0.0f);
+    for (int kind = 0; kind < N_KIND; kind++) {
+        build_rdp_list(kind, CAL_N[kind], arena + SCRATCH_OFF);
+        float us = time_fill_alone();
+        if (kind == K_FILL) has_counters = us > 0;
+        int n = has_counters ? (int)((float)CAL_N[kind] * RDP_TARGET_US / us) : CAL_N[kind] * 8;
+        if (n < CAL_N[kind]) n = CAL_N[kind];
+        if (n > MAX_N[kind]) n = MAX_N[kind];
+        rdp_n[kind] = n;
+        debugf("MB,# %s pass: %d units %.1f us -> %d units (%.2f us per unit, %.0f MB/s)\n", KIND_NAME[kind],
+               CAL_N[kind], us, n, us / CAL_N[kind], has_counters ? pass_bytes(kind, CAL_N[kind]) / us : 0.0f);
+    }
+    // Did the Z-buffered rectangles actually write? Read a pixel back.
+    build_rdp_list(K_RECTZ, 2, arena + SCRATCH_OFF);
+    time_fill_alone();
+    uint16_t px = *(volatile uint16_t *)UncachedAddr(arena + SCRATCH_OFF + 2 * (100 * SCREEN_W + 100));
+    debugf("MB,# rectz check: pixel (100,100) reads %04x, texel %04x -> %s\n", px, TEXEL,
+           (px & 0xFFFE) == (TEXEL & 0xFFFE) ? "written" : "NOT WRITTEN, rectz rows are read-only Z");
+    // Leave the fill list loaded: sweep 1 times it as "the fill pass alone".
+    rdp_layers = rdp_n[K_FILL];
+    build_rdp_list(K_FILL, rdp_layers, arena + SCRATCH_OFF);
 }
 
 // ------------------------------------------------------------------ RSP DMA client
@@ -284,7 +370,7 @@ static void measure(meas_t *m, const cfg_t *c) {
     memset(m, 0, sizeof *m);
     m->cpu_ticks_min = 0xFFFFFFFF;
     m->rdp_us_min = 1e9f;
-    if (c->rdp) build_fill_list(rdp_layers, arena + (c->rdp_off ? c->rdp_off : SCRATCH_OFF));
+    if (c->rdp) build_rdp_list(c->rdp_kind, rdp_n[c->rdp_kind], arena + (c->rdp_off ? c->rdp_off : SCRATCH_OFF));
     void *sp_region = arena + (c->sp_off ? c->sp_off : SP_OFF);
     for (int r = 0; r < RUNS; r++) {
         if (c->cpu) c->cpu->prep();
@@ -319,6 +405,7 @@ static void measure(meas_t *m, const cfg_t *c) {
         if (c->rdp) {
             bool ok = rdp_wait();
             float us = pipe_us();
+            m->tmem_us_sum += (*DP_TMEM_BUSY & 0xFFFFFF) / 62.5f;
             m->rdp_us_sum += us;
             if (us < m->rdp_us_min) m->rdp_us_min = us;
             m->rdp_started    += started;
@@ -561,6 +648,87 @@ static void sweep4(void) {
     debugf("M4,# done\n");
 }
 
+// ------------------------------------------------------------------ sweep 7: what the RDP does matters
+//
+// Fill was pure writes. A texture load is pure reads through TMEM, and a
+// Z-buffered textured rectangle is a colour write, a Z read and a Z write per
+// pixel: what the diorama costs the bus. Each kind alone, against the CPU's
+// uncached reads and line fills, and against RSP DMA.
+
+static void sweep7(void) {
+    debugf("M7,kind,cell,units,bytes_per_pass,win_us,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_mean,tmem_us_mean,rdp_MBps_alone,rdp_started,rdp_busy_after\n");
+    for (int kind = 0; kind < N_KIND; kind++) {
+        struct { const char *name; cfg_t cfg; } cells[] = {
+            { "alone",   { .cpu = NULL,         .rdp = true, .rdp_kind = kind } },
+            { "cpu",     { .cpu = &PATTERNS[0], .rdp = true, .rdp_kind = kind } },
+            { "cr16",    { .cpu = PAT_CR16,     .rdp = true, .rdp_kind = kind } },
+            { "sp_rd2k", { .cpu = NULL,         .rdp = true, .rdp_kind = kind, .sp_dir = 0, .sp_len = 2048 } },
+            { "sp_rd64", { .cpu = NULL,         .rdp = true, .rdp_kind = kind, .sp_dir = 0, .sp_len = 64 } },
+        };
+        float alone_us = 0;
+        for (int i = 0; i < 5; i++) {
+            meas_t m;
+            measure(&m, &cells[i].cfg);
+            float rdp_mean = m.rdp_us_sum / RUNS;
+            if (i == 0) alone_us = rdp_mean;
+            const cfg_t *c = &cells[i].cfg;
+            debugf("M7,%s,%s,%d,%.0f,%.1f,%.1f,%.1f,%lu,%.2f,%.1f,%.1f,%.1f,%.1f,%d,%d\n", KIND_NAME[kind], cells[i].name,
+                   rdp_n[kind], pass_bytes(kind, rdp_n[kind]), m.win_us_sum / RUNS,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n),
+                   (unsigned long)(m.sp_dmas_sum / RUNS),
+                   c->sp_len && m.win_us_sum > 0 ? (float)m.sp_dmas_sum * c->sp_len / m.win_us_sum : 0.0f,
+                   alone_us, rdp_mean, m.tmem_us_sum / RUNS, alone_us > 0 ? pass_bytes(kind, rdp_n[kind]) / alone_us : 0.0f,
+                   m.rdp_started, m.rdp_busy_after);
+        }
+    }
+    debugf("M7,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 6: the VI by mode
+//
+// The VI is the one client that never stops. Its share at each framebuffer
+// mode, seen by the CPU (uncached reads, line fills, writes) and by the RDP
+// fill pass. One framebuffer, shown and left alone; its address is printed
+// because placement matters.
+
+typedef struct { const char *name; resolution_t res; bitdepth_t depth; } vimode_t;
+static const vimode_t VIMODES[] = {
+    { "320x240x16", RESOLUTION_320x240, DEPTH_16_BPP },
+    { "320x240x32", RESOLUTION_320x240, DEPTH_32_BPP },
+    { "640x480x16", RESOLUTION_640x480, DEPTH_16_BPP },
+    { "640x480x32", RESOLUTION_640x480, DEPTH_32_BPP },
+};
+enum { N_VIMODE = sizeof VIMODES / sizeof VIMODES[0] };
+
+static void sweep6(void) {
+    debugf("M6,mode,fb_phys,fb_bytes,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us\n");
+    const pattern_t *pats[] = { &PATTERNS[0], &PATTERNS[1], &PATTERNS[2], PAT_CR16 };
+    for (int v = 0; v < N_VIMODE; v++) {
+        display_close();
+        display_init(VIMODES[v].res, VIMODES[v].depth, 1, GAMMA_NONE, FILTERS_RESAMPLE);
+        surface_t *fb = display_get();
+        unsigned long phys = PhysicalAddr(fb->buffer), bytes = fb->stride * fb->height;
+        memset(fb->buffer, 0, bytes);
+        display_show(fb);
+        wait_ms(100);
+        for (int p = 0; p < 4; p++) {
+            meas_t m;
+            cfg_t c = { .cpu = pats[p] };
+            measure(&m, &c);
+            debugf("M6,%s,%08lx,%lu,%s,%.1f,%.1f,0\n", VIMODES[v].name, phys, bytes, pats[p]->name,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n));
+        }
+        meas_t m;
+        cfg_t c = { .cpu = NULL, .rdp = true };
+        measure(&m, &c);
+        debugf("M6,%s,%08lx,%lu,rdp_fill,0,0,%.1f\n", VIMODES[v].name, phys, bytes, m.rdp_us_sum / RUNS);
+    }
+    display_close();
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    clear_screen();
+    debugf("M6,# done\n");
+}
+
 // ------------------------------------------------------------------ results screen
 
 static int font_id = 1;
@@ -623,15 +791,16 @@ int main(void) {
     joypad_init();
 
     arena = memalign(1024 * 1024, ARENA_BYTES);
-    pibuf = memalign(64, PI_BYTES);
-    rdp_cmds = malloc_uncached((RDP_MAX_LAYERS + 8) * 8);
-    assertf(arena && pibuf && rdp_cmds, "no room for the buffers");
+    rdp_cmds = malloc_uncached(RDP_CMD_QWORDS * 8);
+    assertf(arena && rdp_cmds, "no room for the buffers");
     buf = arena + CPU_OFF;
+    pibuf = arena + PI_OFF;
     memset(buf, 0, BUF_BYTES);
     data_cache_hit_writeback_invalidate(arena, ARENA_BYTES);
-    data_cache_hit_writeback_invalidate(pibuf, PI_BYTES);
     u32 = UncachedAddr(buf);
     u64 = UncachedAddr(buf);
+    volatile uint16_t *tex = UncachedAddr(arena + TEX_OFF);     // the RDP's texture source
+    for (int i = 0; i < TEX_W * TEX_H; i++) tex[i] = TEXEL;
 
     debugf("MB,# MemBench: tv=%s mem=%d MiB ticks/s=%lu buf=%d KiB runs=%d arena=%08lx cpu_buf=%08lx rdp_target=%08lx sp_region=%08lx\n",
            get_tv_type() == TV_PAL ? "PAL" : get_tv_type() == TV_NTSC ? "NTSC" : "MPAL",
@@ -644,6 +813,8 @@ int main(void) {
     sweep2();
     sweep3();
     sweep5();
+    sweep7();
+    sweep6();
 
     // Only now the RSP goes to rspq, for sweep 4 and the text. A SYNC_FULL
     // interrupt may be pending from the raw passes; clear it so rdpq does not
