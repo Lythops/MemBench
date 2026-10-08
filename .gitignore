@@ -1,0 +1,4 @@
+build/
+*.z64
+shots/
+raw/ares-*.log
