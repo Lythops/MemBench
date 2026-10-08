@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the ROM in Ares for N seconds and keep its MB, lines. Ares reports 0 for
+# Run the ROM in Ares for N seconds and keep its MB, and M2, lines. Ares reports 0 for
 # the RDP counters and its CPU timings are not the console's: this is a crash
 # and format check, never a measurement.
 #   bash tools/ares.sh [secs] [rom]     -> raw/ares-<date>.log, MB lines on stdout
@@ -23,5 +23,5 @@ sleep "$SECS"
 kill "$ARES_PID" > /dev/null 2>&1
 [ -n "$ARES_WPID" ] && taskkill //F //PID "$ARES_WPID" > /dev/null 2>&1
 cp "$WORK/ares.log" "$OUT"
-grep '^MB,' "$OUT"
+grep '^M[B2-5],' "$OUT"
 echo "full log: $OUT" >&2

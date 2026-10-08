@@ -3,29 +3,45 @@
 // Kaze's challenge (N64brew, 2026-10-07): nobody has published accurate RDRAM
 // timings or the arbitration between the CPU, the RSP/RDP DMAs and the VI, and
 // no emulator models them. This ROM measures them on a console, one question
-// per sweep, and prints every cell as a CSV line (prefix "MB,") over ISViewer
-// and USB, so `tools/flash.sh -d` captures the whole table.
+// per sweep, and prints every cell as a CSV line over ISViewer and USB, so
+// `tools/flash.sh -d` captures the whole table.
 //
-// Sweep 1 (this file): the CPU's cost per access for a few access patterns,
+// Sweep 1 ("MB," lines): the CPU's cost per access for a few access patterns,
 // under three loads: the VI off, the VI scanning out 320x240x16, and the RDP
 // filling RDRAM flat out beside the VI. The RDP column also reports how much
 // the fill pass itself slowed down, so the arbitration is seen from both sides.
 //
-// Timing is the CPU COUNT register (TICKS_READ, CPU clock / 2, 21.3 ns per
-// tick), so every cell makes thousands of accesses and prints the raw tick
-// count beside the derived figure. Interrupts are off inside a window. Code
-// runs from RDRAM and nothing touches the PI bus (no debugf) inside a window,
-// so the flashcart is out of the loop.
+// Sweep 2 ("M2," lines): the DMA clients. The RSP's DMA engine running a loop
+// ucode (RDRAM->DMEM and DMEM->RDRAM, 64 B to 2 KiB per DMA) and the PI DMAing
+// a 1 MiB block from the cart, alone and against the CPU, the RDP and each
+// other. Every cell reports every running client's figure during one window.
+//
+// The RDP is fed straight from RDRAM (DP_START/DP_END, no RSP in the path) so
+// the RSP is free for the DMA ucode, and rspq is only started at the very end
+// for the results screen. Timing is the CPU COUNT register (TICKS_READ, CPU
+// clock / 2, 21.3 ns per tick), so every cell makes thousands of accesses and
+// prints the raw tick count beside the derived figure. Interrupts are off
+// inside a CPU window. Code runs from RDRAM and nothing touches the PI bus
+// (no debugf) inside a window, except the PI DMA cells, which are the point.
 
 #include <libdragon.h>
 #include <malloc.h>
 
-#define BUF_BYTES   (256 * 1024)    // 32x the 8 KiB data cache
-#define RUNS        5               // keep the fastest and the mean
-#define SCREEN_W    320
-#define SCREEN_H    240
+#define BUF_BYTES     (256 * 1024)  // CPU buffer: 32x the 8 KiB data cache
+#define SP_BUF_BYTES  (64 * 1024)   // RSP DMA region
+#define PI_BYTES      (1024 * 1024) // one PI DMA pass
+#define ARENA_BYTES   (4 * 1024 * 1024 + 256 * 1024) // 1 MiB aligned; everything placed inside
+#define CPU_OFF       (1024 * 1024) // the CPU buffer: a 1 MiB block with room below and above
+#define SCRATCH_OFF   (2048 * 1024) // default RDP fill target: a different 1 MiB block
+#define SP_OFF        (2560 * 1024) // default RSP DMA region: another one
+#define RUNS          5             // keep the fastest and the mean
+#define SCREEN_W      320
+#define SCREEN_H      240
 #define RDP_TARGET_US 80000         // the fill pass aims to outlast any CPU window
 #define RDP_MAX_LAYERS 240          // DP_PIPE_BUSY is 24 bits: 268 ms max
+#define SPIN_WINDOW_US 25000        // window for cells with no CPU pattern
+
+DEFINE_RSP_UCODE(rsp_dmaloop);
 
 enum { L_VIOFF, L_IDLE, L_RDP, N_LOAD };
 static const char *LOAD_NAME[] = { "vioff", "idle", "rdpfill" };
@@ -37,17 +53,32 @@ typedef struct {
     int   bytes;            // bytes moved per access
 } pattern_t;
 
+// One measurement: which clients run, and what each of them reported.
 typedef struct {
-    int      n;                 // accesses per run
-    uint32_t ticks_min, ticks_sum;
-    float    rdp_us;            // fill pass duration while the CPU hammered (min)
-    int      rdp_started, rdp_busy_after;   // out of RUNS
-} cell_t;
+    const pattern_t *cpu;   // NULL: a fixed spin window instead
+    bool rdp;
+    int  sp_dir, sp_len;    // sp_len 0: no RSP DMA; dir 0 read, 1 write
+    bool pi;
+    uint32_t rdp_off, sp_off;   // placement in the arena; 0 = the defaults
+} cfg_t;
 
+typedef struct {
+    int      cpu_n;
+    uint32_t cpu_ticks_min, cpu_ticks_sum;
+    float    win_us_sum;                    // window length (CPU or spin)
+    uint32_t sp_dmas_sum;                   // RSP DMAs issued inside the window
+    float    rdp_us_min, rdp_us_sum;        // the fill pass's DP_PIPE_BUSY time
+    int      rdp_started, rdp_busy_after, rdp_timeout;
+    float    pi_us_sum;                     // the PI pass, issue to completion
+    int      pi_busy_after;
+} meas_t;
+
+static uint8_t           *arena;    // 1 MiB aligned; the CPU buffer is its first 256 KiB
 static uint8_t           *buf;      // cached alias
 static volatile uint32_t *u32;      // uncached aliases
 static volatile uint64_t *u64;
 static volatile uint32_t  sink;
+static uint8_t           *pibuf;    // the PI's destination, outside the arena
 
 // ------------------------------------------------------------------ patterns
 
@@ -136,43 +167,69 @@ static const pattern_t PATTERNS[] = {
     { "cw16",     prep_flush, run_cw16,     32 },
 };
 enum { N_PAT = sizeof PATTERNS / sizeof PATTERNS[0] };
+#define PAT_U64R (&PATTERNS[1])
+#define PAT_CR16 (&PATTERNS[6])
 
-static cell_t results[N_PAT][N_LOAD];
+static meas_t results[N_PAT][N_LOAD];
 static float  rdp_alone_us[N_LOAD];     // the fill pass with the CPU quiet, per VI state
 static int    rdp_layers = 8;
 static bool   has_counters;
 
-// ------------------------------------------------------------------ RDP load
+// ------------------------------------------------------------------ RDP, fed from RDRAM
 
-static surface_t     scratch;
-static rspq_block_t *fill_blk;
+static uint64_t *rdp_cmds;              // uncached
+static int       rdp_ncmds;
 
 static inline void reset_counters(void) {
     *DP_STATUS = DP_WSTATUS_RESET_PIPE_COUNTER | DP_WSTATUS_RESET_TMEM_COUNTER |
                  DP_WSTATUS_RESET_CMD_COUNTER  | DP_WSTATUS_RESET_CLOCK_COUNTER;
 }
 static inline float pipe_us(void) { return (*DP_PIPE_BUSY & 0xFFFFFF) / 62.5f; }
+static inline bool rdp_pipe_busy(void) { return *DP_STATUS & DP_STATUS_PIPE_BUSY; }
 
 // `layers` full-screen fill-mode rectangles into a scratch buffer: the most
-// RDRAM-hungry thing the RDP does (8 bytes a clock, no texture, no Z).
-static void make_fill_block(int layers) {
-    if (fill_blk) rspq_block_free(fill_blk);
-    rspq_block_begin();
-    rdpq_set_color_image(&scratch);
-    rdpq_set_scissor(0, 0, SCREEN_W, SCREEN_H);
-    rdpq_set_mode_fill(RGBA32(32, 64, 96, 255));
-    for (int i = 0; i < layers; i++) rdpq_fill_rectangle(0, 0, SCREEN_W, SCREEN_H);
-    fill_blk = rspq_block_end();
+// RDRAM-hungry thing the RDP does (8 bytes a clock, no texture, no Z). Raw
+// RDP commands; in fill mode the lower-right corner is inclusive, so the
+// rectangle ends at (W-1, H-1) in 10.2 fixed point.
+static void build_fill_list(int layers, void *target) {
+    int n = 0;
+    uint32_t addr = PhysicalAddr(target);
+    uint32_t c16  = color_to_packed16(RGBA32(32, 64, 96, 255));
+    rdp_cmds[n++] = (0x2Full << 56) | (3ull << 52);                                   // SET_OTHER_MODES, cycle type fill
+    rdp_cmds[n++] = (0x3Full << 56) | (2ull << 51) | ((uint64_t)(SCREEN_W - 1) << 32) | addr; // SET_COLOR_IMAGE RGBA16
+    rdp_cmds[n++] = (0x2Dull << 56) | ((uint64_t)(SCREEN_W * 4) << 12) | (SCREEN_H * 4);     // SET_SCISSOR 0,0 .. W,H
+    rdp_cmds[n++] = (0x37ull << 56) | ((uint64_t)c16 << 16) | c16;                    // SET_FILL_COLOR
+    for (int i = 0; i < layers; i++)
+        rdp_cmds[n++] = (0x36ull << 56) | ((uint64_t)((SCREEN_W - 1) * 4) << 44) | ((uint64_t)((SCREEN_H - 1) * 4) << 32); // FILL_RECTANGLE
+    rdp_cmds[n++] = 0x29ull << 56;                                                    // SYNC_FULL
+    rdp_ncmds = n;
+}
+
+static void rdp_start(void) {
+    while (*DP_STATUS & (DP_STATUS_START_VALID | DP_STATUS_END_VALID)) {}
+    *DP_STATUS = DP_WSTATUS_RESET_XBUS_DMEM_DMA;        // commands come from RDRAM
+    uint32_t s = PhysicalAddr(rdp_cmds);
+    *DP_START = s;
+    *DP_END   = s + rdp_ncmds * 8;
+}
+
+// Returns false on timeout (300 ms).
+static bool rdp_wait(void) {
+    uint32_t t = TICKS_READ();
+    while (*DP_STATUS & (DP_STATUS_BUSY | DP_STATUS_PIPE_BUSY | DP_STATUS_START_VALID)) {
+        if (TICKS_DISTANCE(t, TICKS_READ()) > TICKS_FROM_MS(300)) return false;
+    }
+    return true;
 }
 
 static float time_fill_alone(void) {
     float best = 1e9f;
     for (int r = 0; r < RUNS; r++) {
-        rspq_wait();
         reset_counters();
-        rspq_block_run(fill_blk);
-        rspq_wait();
+        rdp_start();
+        bool ok = rdp_wait();
         float us = pipe_us();
+        if (!ok) debugf("MB,# WARNING: fill pass timed out, DP_STATUS=%08lx\n", *DP_STATUS);
         if (us < best) best = us;
     }
     return best;
@@ -180,170 +237,427 @@ static float time_fill_alone(void) {
 
 // Size the pass so it lasts about RDP_TARGET_US; the CPU windows are shorter.
 static void calibrate_rdp(void) {
-    make_fill_block(8);
+    build_fill_list(8, arena + SCRATCH_OFF);
     float us8 = time_fill_alone();
     has_counters = us8 > 0;
     int layers = has_counters ? (int)(8.0f * RDP_TARGET_US / us8) : 64;
     if (layers < 8) layers = 8;
     if (layers > RDP_MAX_LAYERS) layers = RDP_MAX_LAYERS;
     rdp_layers = layers;
-    make_fill_block(layers);
+    build_fill_list(layers, arena + SCRATCH_OFF);
     debugf("MB,# fill pass: 8 layers %.1f us -> %d layers (%.1f us per 320x240x16 layer, %.0f MB/s)\n",
            us8, layers, us8 / 8, has_counters ? SCREEN_W * SCREEN_H * 2 * 8 / us8 : 0.0f);
 }
 
+// ------------------------------------------------------------------ RSP DMA client
+
+static void sp_start(int dir, int len, void *region) {
+    rsp_wait();
+    rsp_load(&rsp_dmaloop);
+    SP_DMEM[0] = 0;
+    SP_DMEM[1] = PhysicalAddr(region);
+    SP_DMEM[2] = len - 1;
+    SP_DMEM[3] = dir;
+    SP_DMEM[4] = SP_BUF_BYTES - 1;
+    *SP_STATUS = SP_WSTATUS_CLEAR_SIG0;
+    rsp_run_async();
+}
+static inline uint32_t sp_count(void) { return SP_DMEM[0]; }
+static void sp_stop(void) {
+    *SP_STATUS = SP_WSTATUS_SET_SIG0;
+    rsp_wait();
+}
+
+// ------------------------------------------------------------------ PI DMA client
+
+static inline bool pi_busy(void) { return *(volatile uint32_t *)0xA4600010 & 3; }   // PI_STATUS: DMA or IO busy
+
+static void pi_start(void) {
+    dma_read_raw_async(pibuf, 0x10000000, PI_BYTES);    // the cart, from its start
+}
+
 // ------------------------------------------------------------------ measure
 
-static void measure(cell_t *c, const pattern_t *p, int load) {
-    memset(c, 0, sizeof *c);
-    c->ticks_min = 0xFFFFFFFF;
-    c->rdp_us = 1e9f;
+static float ticks_us(uint32_t t) { return t * (1e6f / TICKS_PER_SECOND); }
+
+static void measure(meas_t *m, const cfg_t *c) {
+    memset(m, 0, sizeof *m);
+    m->cpu_ticks_min = 0xFFFFFFFF;
+    m->rdp_us_min = 1e9f;
+    if (c->rdp) build_fill_list(rdp_layers, arena + (c->rdp_off ? c->rdp_off : SCRATCH_OFF));
+    void *sp_region = arena + (c->sp_off ? c->sp_off : SP_OFF);
     for (int r = 0; r < RUNS; r++) {
-        rspq_wait();                        // nothing of ours in flight
-        p->prep();
+        if (c->cpu) c->cpu->prep();
         bool started = false;
-        if (load == L_RDP) {
+        uint32_t pi_t0 = 0;
+        if (c->sp_len) { sp_start(c->sp_dir, c->sp_len, sp_region); wait_ticks(TICKS_FROM_US(500)); }
+        if (c->pi)     { pi_t0 = TICKS_READ(); pi_start(); }
+        if (c->rdp) {
             reset_counters();
-            rspq_block_run(fill_blk);
-            rspq_flush();
+            rdp_start();
             uint32_t t = TICKS_READ();      // wait for the pipe to actually run
-            while (!(*DP_STATUS & DP_STATUS_PIPE_BUSY) && TICKS_DISTANCE(t, TICKS_READ()) < TICKS_FROM_MS(50)) {}
-            started = *DP_STATUS & DP_STATUS_PIPE_BUSY;
+            while (!rdp_pipe_busy() && TICKS_DISTANCE(t, TICKS_READ()) < TICKS_FROM_MS(50)) {}
+            started = rdp_pipe_busy();
         }
         disable_interrupts();
+        uint32_t sp0 = c->sp_len ? sp_count() : 0;
         uint32_t t0 = TICKS_READ();
-        int n = p->run();
+        int n = 0;
+        if (c->cpu) n = c->cpu->run();
+        else while (TICKS_DISTANCE(t0, TICKS_READ()) < TICKS_FROM_US(SPIN_WINDOW_US)) {}
         uint32_t t1 = TICKS_READ();
-        bool busy_after = *DP_STATUS & DP_STATUS_PIPE_BUSY;
+        uint32_t sp1 = c->sp_len ? sp_count() : 0;
+        bool rdp_busy_after = rdp_pipe_busy();
+        bool pi_busy_after  = pi_busy();
         enable_interrupts();
-        if (load == L_RDP) {
-            rspq_wait();
+        if (c->sp_len) sp_stop();
+        if (c->pi) {
+            while (pi_busy()) {}
+            m->pi_us_sum += ticks_us(TICKS_DISTANCE(pi_t0, TICKS_READ()));
+            m->pi_busy_after += pi_busy_after;
+        }
+        if (c->rdp) {
+            bool ok = rdp_wait();
             float us = pipe_us();
-            if (us < c->rdp_us) c->rdp_us = us;
-            c->rdp_started    += started;
-            c->rdp_busy_after += busy_after;
+            m->rdp_us_sum += us;
+            if (us < m->rdp_us_min) m->rdp_us_min = us;
+            m->rdp_started    += started;
+            m->rdp_busy_after += rdp_busy_after;
+            m->rdp_timeout    += !ok;
         }
         uint32_t ticks = TICKS_DISTANCE(t0, t1);
-        c->n = n;
-        c->ticks_sum += ticks;
-        if (ticks < c->ticks_min) c->ticks_min = ticks;
+        m->cpu_n = n;
+        m->cpu_ticks_sum += ticks;
+        if (ticks < m->cpu_ticks_min) m->cpu_ticks_min = ticks;
+        m->win_us_sum += ticks_us(ticks);
+        m->sp_dmas_sum += sp1 - sp0;
     }
-    if (load != L_RDP) c->rdp_us = 0;
+    if (!c->rdp) m->rdp_us_min = 0;
 }
 
-static float ns_per(uint32_t ticks, int n) { return ticks * (1e9f / TICKS_PER_SECOND) / n; }
+static float ns_per(uint32_t ticks, int n) { return n ? ticks * (1e9f / TICKS_PER_SECOND) / n : 0; }
 
-static void print_cell(const cell_t *c, const pattern_t *p, int load) {
-    float ns_min  = ns_per(c->ticks_min, c->n);
-    float ns_mean = ns_per(c->ticks_sum / RUNS, c->n);
+// ------------------------------------------------------------------ sweep 1
+
+static void print_cell1(const meas_t *m, const pattern_t *p, int load) {
+    float ns_min  = ns_per(m->cpu_ticks_min, m->cpu_n);
+    float ns_mean = ns_per(m->cpu_ticks_sum / RUNS, m->cpu_n);
     debugf("MB,%s,%s,%d,%d,%lu,%lu,%.1f,%.1f,%.1f,%.1f,%.1f,%d,%d\n",
-           p->name, LOAD_NAME[load], c->n, p->bytes,
-           (unsigned long)c->ticks_min, (unsigned long)(c->ticks_sum / RUNS),
+           p->name, LOAD_NAME[load], m->cpu_n, p->bytes,
+           (unsigned long)m->cpu_ticks_min, (unsigned long)(m->cpu_ticks_sum / RUNS),
            ns_min, ns_mean, p->bytes * 1000.0f / ns_min,
-           load == L_RDP ? rdp_alone_us[L_IDLE] : 0.0f, c->rdp_us,
-           c->rdp_started, c->rdp_busy_after);
+           load == L_RDP ? rdp_alone_us[L_IDLE] : 0.0f, m->rdp_us_min,
+           m->rdp_started, m->rdp_busy_after);
 }
+
+static void sweep1_load(int load) {
+    for (int p = 0; p < N_PAT; p++) {
+        cfg_t c = { .cpu = &PATTERNS[p], .rdp = load == L_RDP };
+        measure(&results[p][load], &c);
+        print_cell1(&results[p][load], &PATTERNS[p], load);
+    }
+}
+
+static void clear_screen(void) {
+    surface_t *fb = display_get();
+    memset(fb->buffer, 0, fb->stride * fb->height);
+    display_show(fb);
+}
+
+static void sweep1(void) {
+    // VI off: the one moment the CPU has RDRAM to itself. Runs before the
+    // display exists, so the TV is black for a second.
+    *(volatile uint32_t *)0xA4400000 = 0;       // VI_CTRL type 0: no fetch, no sync
+    wait_ms(50);
+    rdp_alone_us[L_VIOFF] = time_fill_alone();
+    sweep1_load(L_VIOFF);
+
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    clear_screen();
+    wait_ms(50);
+    rdp_alone_us[L_IDLE] = time_fill_alone();
+    debugf("MB,# fill pass alone (%d layers): VI off %.1f us, VI on %.1f us\n", rdp_layers, rdp_alone_us[L_VIOFF], rdp_alone_us[L_IDLE]);
+    sweep1_load(L_IDLE);
+    sweep1_load(L_RDP);
+    debugf("MB,# done%s\n", has_counters ? "" : " -- RDP counters read 0: emulator, timings are not the console's");
+}
+
+// ------------------------------------------------------------------ sweep 2
+
+typedef struct { const char *name; cfg_t cfg; } cell2_t;
+
+static const cell2_t CELLS2[] = {
+    // the RSP DMA engine alone: fixed cost per DMA + cost per byte
+    { "sp_rd64",        { NULL,     false, 0, 64,   false } },
+    { "sp_rd512",       { NULL,     false, 0, 512,  false } },
+    { "sp_rd2k",        { NULL,     false, 0, 2048, false } },
+    { "sp_wr64",        { NULL,     false, 1, 64,   false } },
+    { "sp_wr512",       { NULL,     false, 1, 512,  false } },
+    { "sp_wr2k",        { NULL,     false, 1, 2048, false } },
+    // RSP DMA against the CPU
+    { "sp_rd2k+cpu",    { PAT_U64R, false, 0, 2048, false } },
+    { "sp_wr2k+cpu",    { PAT_U64R, false, 1, 2048, false } },
+    { "sp_rd64+cpu",    { PAT_U64R, false, 0, 64,   false } },
+    { "sp_rd2k+cr16",   { PAT_CR16, false, 0, 2048, false } },
+    // RSP DMA against the RDP
+    { "sp_rd2k+rdp",    { NULL,     true,  0, 2048, false } },
+    { "sp_wr2k+rdp",    { NULL,     true,  1, 2048, false } },
+    { "sp_rd64+rdp",    { NULL,     true,  0, 64,   false } },
+    // all three
+    { "sp_rd2k+cpu+rdp",{ PAT_U64R, true,  0, 2048, false } },
+    { "sp_wr2k+cpu+rdp",{ PAT_U64R, true,  1, 2048, false } },
+    // the PI
+    { "pi",             { NULL,     false, 0, 0,    true  } },
+    { "pi+cpu",         { PAT_U64R, false, 0, 0,    true  } },
+    { "pi+rdp",         { NULL,     true,  0, 0,    true  } },
+    { "pi+sp_rd2k",     { NULL,     false, 0, 2048, true  } },
+    { "pi+sp_wr2k",     { NULL,     false, 1, 2048, true  } },
+    // cross-checks against sweep 1 and the alone figures
+    { "cpu",            { PAT_U64R, false, 0, 0,    false } },
+    { "cpu+rdp",        { PAT_U64R, true,  0, 0,    false } },
+    { "rdp",            { NULL,     true,  0, 0,    false } },
+};
+enum { N_CELL2 = sizeof CELLS2 / sizeof CELLS2[0] };
+static meas_t results2[N_CELL2];
+
+static void sweep2(void) {
+    debugf("M2,cell,cpu,rdp,sp,pi,runs,win_us,cpu_n,cpu_ticks_min,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_min,rdp_us_mean,rdp_started,rdp_busy_after,rdp_timeout,pi_us_mean,pi_MBps,pi_busy_after\n");
+    for (int i = 0; i < N_CELL2; i++) {
+        const cfg_t *c = &CELLS2[i].cfg;
+        meas_t *m = &results2[i];
+        measure(m, c);
+        float win_us = m->win_us_sum / RUNS;
+        float sp_mbps = c->sp_len && m->win_us_sum > 0 ? (float)m->sp_dmas_sum * c->sp_len / m->win_us_sum : 0;
+        float pi_us = c->pi ? m->pi_us_sum / RUNS : 0;
+        char sp[16] = "-";
+        if (c->sp_len) snprintf(sp, sizeof sp, "%s%d", c->sp_dir ? "wr" : "rd", c->sp_len);
+        debugf("M2,%s,%s,%d,%s,%d,%d,%.1f,%d,%lu,%.1f,%.1f,%lu,%.2f,%.1f,%.1f,%.1f,%d,%d,%d,%.1f,%.2f,%d\n",
+               CELLS2[i].name, c->cpu ? c->cpu->name : "-", c->rdp, sp, c->pi, RUNS, win_us,
+               m->cpu_n, (unsigned long)m->cpu_ticks_min,
+               ns_per(m->cpu_ticks_min, m->cpu_n), ns_per(m->cpu_ticks_sum / RUNS, m->cpu_n),
+               (unsigned long)(m->sp_dmas_sum / RUNS), sp_mbps,
+               c->rdp ? rdp_alone_us[L_IDLE] : 0.0f, m->rdp_us_min, c->rdp ? m->rdp_us_sum / RUNS : 0.0f,
+               m->rdp_started, m->rdp_busy_after, m->rdp_timeout,
+               pi_us, pi_us > 0 ? PI_BYTES / pi_us : 0.0f, m->pi_busy_after);
+    }
+    debugf("M2,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 3: placement
+//
+// Does WHERE the other client's memory sits matter? The CPU reads its fixed
+// 256 KiB at arena+0 while the RDP fills, or the RSP DMAs, a region placed at
+// each offset in turn. If RDRAM banks or rows are what folklore says, some
+// offsets collide and some do not.
+
+// Arena offsets in KiB. The CPU buffer is at CPU_OFF (1024..1280): the 1 MiB
+// block below it, the rest of its own block, the next block, and the blocks
+// beyond 4 MiB physical (the Expansion Pak's chips) are all probed.
+static const uint32_t OFFS[] = { 0, 256, 512, 768, 1280, 1536, 1792, 2048, 2560, 3072, 3584, 3840 };
+enum { N_OFF = sizeof OFFS / sizeof OFFS[0] };
+
+static void sweep3(void) {
+    debugf("M3,off_kb,phys,client,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,rdp_started,rdp_busy_after,sp_dmas,sp_MBps\n");
+    for (int i = 0; i < N_OFF; i++) {
+        uint32_t off = OFFS[i] * 1024;
+        unsigned long phys = PhysicalAddr(arena + off);
+        meas_t alone, rdp, sp;
+        cfg_t c_alone = { .cpu = NULL,         .rdp = true,  .rdp_off = off };
+        cfg_t c_rdp   = { .cpu = &PATTERNS[0], .rdp = true,  .rdp_off = off };
+        cfg_t c_sp    = { .cpu = &PATTERNS[0], .sp_dir = 0, .sp_len = 2048, .sp_off = off };
+        measure(&alone, &c_alone);
+        measure(&rdp, &c_rdp);
+        measure(&sp, &c_sp);
+        float alone_us = alone.rdp_us_sum / RUNS;
+        debugf("M3,%lu,%08lx,rdp,%.1f,%.1f,%.1f,%.1f,%.1f,%d,%d,0,0\n", (unsigned long)OFFS[i], phys, rdp.win_us_sum / RUNS,
+               ns_per(rdp.cpu_ticks_min, rdp.cpu_n), ns_per(rdp.cpu_ticks_sum / RUNS, rdp.cpu_n),
+               alone_us, rdp.rdp_us_sum / RUNS, rdp.rdp_started, rdp.rdp_busy_after);
+        debugf("M3,%lu,%08lx,sp_rd2k,%.1f,%.1f,%.1f,0,0,0,0,%lu,%.2f\n", (unsigned long)OFFS[i], phys, sp.win_us_sum / RUNS,
+               ns_per(sp.cpu_ticks_min, sp.cpu_n), ns_per(sp.cpu_ticks_sum / RUNS, sp.cpu_n),
+               (unsigned long)(sp.sp_dmas_sum / RUNS), sp.win_us_sum > 0 ? (float)sp.sp_dmas_sum * 2048 / sp.win_us_sum : 0);
+    }
+    debugf("M3,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 5: stride, for the row size
+//
+// Uncached reads of every word of the 256 KiB buffer once, consecutive
+// accesses `stride` bytes apart, same loop shape at every stride so only the
+// memory changes. Consecutive accesses inside one open RDRAM row are cheap;
+// where the stride crosses the row size every access opens a row.
+
+static const uint32_t STRIDES[] = { 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768 };
+enum { N_STRIDE = sizeof STRIDES / sizeof STRIDES[0] };
+static int stride_words;
+
+static int run_stride(void) {
+    uint32_t s = 0;
+    int w = stride_words;
+    for (int k = 0; k < w; k++)
+        for (int i = k; i < N32; i += w) s += u32[i];
+    sink = s;
+    return N32;
+}
+static const pattern_t PAT_STRIDE = { "stride", prep_none, run_stride, 4 };
+
+static void sweep5(void) {
+    debugf("M5,stride_B,accesses,ticks_min,ns_min,ns_mean\n");
+    for (int i = 0; i < N_STRIDE; i++) {
+        stride_words = STRIDES[i] / 4;
+        meas_t m;
+        cfg_t c = { .cpu = &PAT_STRIDE };
+        measure(&m, &c);
+        debugf("M5,%lu,%d,%lu,%.1f,%.1f\n", (unsigned long)STRIDES[i], m.cpu_n, (unsigned long)m.cpu_ticks_min,
+               ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n));
+    }
+    debugf("M5,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 4: the rspq-fed fill
+//
+// Run 1 (2026-10-09, first ROM) fed the fill through an rspq block and saw
+// the CPU pay far more under it than the direct feed shows. Same target,
+// same layers, through rspq, in the same ROM: is the feed path the variable?
+
+static void sweep4(void) {
+    surface_t s = surface_make(arena + SCRATCH_OFF, FMT_RGBA16, SCREEN_W, SCREEN_H, SCREEN_W * 2);
+    rspq_block_begin();
+    rdpq_set_color_image(&s);
+    rdpq_set_mode_fill(RGBA32(32, 64, 96, 255));
+    for (int i = 0; i < rdp_layers; i++) rdpq_fill_rectangle(0, 0, SCREEN_W, SCREEN_H);
+    rspq_block_t *blk = rspq_block_end();
+
+    debugf("M4,cell,cpu_ns_min,cpu_ns_mean,rdp_us_min,rdp_started,rdp_busy_after\n");
+    for (int which = 0; which < 3; which++) {         // 0: CPU alone, rspq idle; 1: rspq fill alone; 2: both
+        const pattern_t *p = &PATTERNS[0];
+        uint32_t tmin = 0xFFFFFFFF, tsum = 0; float rdp_min = 1e9f; int started = 0, busy_after = 0, n = 0;
+        for (int r = 0; r < RUNS; r++) {
+            rspq_wait();
+            bool st = false;
+            if (which) {
+                reset_counters();
+                rspq_block_run(blk);
+                rspq_flush();
+                uint32_t t = TICKS_READ();
+                while (!rdp_pipe_busy() && TICKS_DISTANCE(t, TICKS_READ()) < TICKS_FROM_MS(50)) {}
+                st = rdp_pipe_busy();
+            }
+            disable_interrupts();
+            uint32_t t0 = TICKS_READ();
+            if (which != 1) n = p->run();
+            else while (TICKS_DISTANCE(t0, TICKS_READ()) < TICKS_FROM_US(SPIN_WINDOW_US)) {}
+            uint32_t t1 = TICKS_READ();
+            bool ba = rdp_pipe_busy();
+            enable_interrupts();
+            if (which) { rspq_wait(); float us = pipe_us(); if (us < rdp_min) rdp_min = us; started += st; busy_after += ba; }
+            uint32_t ticks = TICKS_DISTANCE(t0, t1);
+            tsum += ticks; if (ticks < tmin) tmin = ticks;
+        }
+        static const char *NAME[] = { "cpu_rspq_idle", "rspq_fill_alone", "cpu+rspq_fill" };
+        debugf("M4,%s,%.1f,%.1f,%.1f,%d,%d\n", NAME[which], ns_per(tmin, n), ns_per(tsum / RUNS, n),
+               which ? rdp_min : 0.0f, started, busy_after);
+    }
+    rspq_block_free(blk);
+    debugf("M4,# done\n");
+}
+
+// ------------------------------------------------------------------ results screen
 
 static int font_id = 1;
 
-static void progress(const char *what, int done, int total) {
-    surface_t *fb = display_get();
-    rdpq_attach_clear(fb, NULL);
-    rdpq_set_mode_standard();
-    rdpq_text_printf(NULL, font_id, 16, 110, "MemBench: %s %d/%d", what, done, total);
-    rdpq_detach_show();
+static float sp_mbps_of(int i) {
+    const cfg_t *c = &CELLS2[i].cfg;
+    return results2[i].win_us_sum > 0 ? (float)results2[i].sp_dmas_sum * c->sp_len / results2[i].win_us_sum : 0;
 }
 
-static void sweep_load(int load, bool show_progress) {
-    for (int p = 0; p < N_PAT; p++) {
-        if (show_progress) progress(LOAD_NAME[load], p, N_PAT);
-        measure(&results[p][load], &PATTERNS[p], load);
-        print_cell(&results[p][load], &PATTERNS[p], load);
-    }
-}
-
-// ------------------------------------------------------------------ results
-
-static void show(int metric) {
+static void show(int page) {
     surface_t *fb = display_get();
     rdpq_attach_clear(fb, NULL);
     rdpq_set_mode_standard();
     int y = 20;
-    rdpq_text_printf(NULL, font_id, 8, y, "MemBench sweep 1  %s", metric ? "MB/s (fastest run)" : "ns per access (fastest run)");
-    y += 14;
-    rdpq_text_printf(NULL, font_id, 8, y, "pattern   bytes   vioff    idle  rdpfill");
-    y += 12;
-    for (int p = 0; p < N_PAT; p++) {
-        char line[96];
-        int n = snprintf(line, sizeof line, "%-9s %3d ", PATTERNS[p].name, PATTERNS[p].bytes);
-        for (int l = 0; l < N_LOAD; l++) {
-            const cell_t *c = &results[p][l];
-            float ns = ns_per(c->ticks_min, c->n);
-            float v = metric ? PATTERNS[p].bytes * 1000.0f / ns : ns;
-            n += snprintf(line + n, sizeof line - n, v < 1000 ? "%8.1f" : "%8.0f", v);
-        }
-        rdpq_text_printf(NULL, font_id, 8, y, "%s", line);
+    if (page == 0) {
+        rdpq_text_printf(NULL, font_id, 8, y, "MemBench sweep 1: ns per access (fastest run)");
+        y += 14;
+        rdpq_text_printf(NULL, font_id, 8, y, "pattern   bytes   vioff    idle  rdpfill");
         y += 12;
+        for (int p = 0; p < N_PAT; p++) {
+            char line[96];
+            int n = snprintf(line, sizeof line, "%-9s %3d ", PATTERNS[p].name, PATTERNS[p].bytes);
+            for (int l = 0; l < N_LOAD; l++) {
+                float v = ns_per(results[p][l].cpu_ticks_min, results[p][l].cpu_n);
+                n += snprintf(line + n, sizeof line - n, v < 1000 ? "%8.1f" : "%8.0f", v);
+            }
+            rdpq_text_printf(NULL, font_id, 8, y, "%s", line);
+            y += 12;
+        }
+        y += 6;
+        rdpq_text_printf(NULL, font_id, 8, y, "fill pass alone: VI off %.0f us, VI on %.0f us", rdp_alone_us[L_VIOFF], rdp_alone_us[L_IDLE]);
+        y += 12;
+        rdpq_text_printf(NULL, font_id, 8, y, "fill pass with CPU: u32r %.0f  cr16 %.0f us",
+                         results[0][L_RDP].rdp_us_min, results[6][L_RDP].rdp_us_min);
+    } else {
+        rdpq_text_printf(NULL, font_id, 8, y, "MemBench sweep 2: DMA clients");
+        y += 14;
+        rdpq_text_printf(NULL, font_id, 8, y, "cell              sp MB/s  cpu ns  rdp us   pi us");
+        y += 12;
+        for (int i = 0; i < N_CELL2; i++) {
+            const meas_t *m = &results2[i];
+            const cfg_t *c = &CELLS2[i].cfg;
+            rdpq_text_printf(NULL, font_id, 8, y, "%-17s %7.1f %7.0f %7.0f %7.0f", CELLS2[i].name,
+                             sp_mbps_of(i), ns_per(m->cpu_ticks_min, m->cpu_n),
+                             c->rdp ? m->rdp_us_sum / RUNS : 0.0f, c->pi ? m->pi_us_sum / RUNS : 0.0f);
+            y += 8;
+        }
     }
-    y += 6;
-    rdpq_text_printf(NULL, font_id, 8, y, "fill pass alone: VI off %.0f us, VI on %.0f us", rdp_alone_us[L_VIOFF], rdp_alone_us[L_IDLE]);
-    y += 12;
-    rdpq_text_printf(NULL, font_id, 8, y, "fill pass with CPU: u32r %.0f  cr16 %.0f us",
-                     results[0][L_RDP].rdp_us, results[N_PAT - 2][L_RDP].rdp_us);
-    y += 12;
+    y += 10;
     if (!has_counters)
         rdpq_text_printf(NULL, font_id, 8, y, "RDP counters read 0 (emulator?)"), y += 12;
-    y += 6;
-    rdpq_text_printf(NULL, font_id, 8, y, "B: ns or MB/s   Start: rerun");
+    rdpq_text_printf(NULL, font_id, 8, y, "A: other page    (Reset to rerun)");
     rdpq_detach_show();
-}
-
-static void run_all(bool first) {
-    // VI off: the one moment the CPU has RDRAM to itself. Before the display
-    // exists on the first pass; afterwards the TV loses sync for a second.
-    if (!first) { rspq_wait(); display_close(); }
-    *(volatile uint32_t *)0xA4400000 = 0;       // VI_CTRL type 0: no fetch, no sync
-    wait_ms(50);
-    rdp_alone_us[L_VIOFF] = time_fill_alone();
-    sweep_load(L_VIOFF, false);
-
-    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
-    wait_ms(50);
-    rdp_alone_us[L_IDLE] = time_fill_alone();
-    debugf("MB,# fill pass alone (%d layers): VI off %.1f us, VI on %.1f us\n", rdp_layers, rdp_alone_us[L_VIOFF], rdp_alone_us[L_IDLE]);
-    sweep_load(L_IDLE, true);
-    sweep_load(L_RDP, true);
-    debugf("MB,# done%s\n", has_counters ? "" : " -- RDP counters read 0: emulator, timings are not the console's");
 }
 
 int main(void) {
     debug_init_isviewer();
     debug_init_usblog();
-    rdpq_init();
+    rsp_init();
     joypad_init();
-    rdpq_text_register_font(font_id, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_MONO));
 
-    buf = memalign(64, BUF_BYTES);
-    assertf(buf, "no room for the %d KiB buffer", BUF_BYTES / 1024);
+    arena = memalign(1024 * 1024, ARENA_BYTES);
+    pibuf = memalign(64, PI_BYTES);
+    rdp_cmds = malloc_uncached((RDP_MAX_LAYERS + 8) * 8);
+    assertf(arena && pibuf && rdp_cmds, "no room for the buffers");
+    buf = arena + CPU_OFF;
     memset(buf, 0, BUF_BYTES);
-    data_cache_hit_writeback_invalidate(buf, BUF_BYTES);
+    data_cache_hit_writeback_invalidate(arena, ARENA_BYTES);
+    data_cache_hit_writeback_invalidate(pibuf, PI_BYTES);
     u32 = UncachedAddr(buf);
     u64 = UncachedAddr(buf);
-    scratch = surface_alloc(FMT_RGBA16, SCREEN_W, SCREEN_H);
 
-    debugf("MB,# MemBench sweep 1: tv=%s mem=%d MiB ticks/s=%lu buf=%d KiB runs=%d\n",
+    debugf("MB,# MemBench: tv=%s mem=%d MiB ticks/s=%lu buf=%d KiB runs=%d arena=%08lx cpu_buf=%08lx rdp_target=%08lx sp_region=%08lx\n",
            get_tv_type() == TV_PAL ? "PAL" : get_tv_type() == TV_NTSC ? "NTSC" : "MPAL",
-           get_memory_size() >> 20, (unsigned long)TICKS_PER_SECOND, BUF_BYTES / 1024, RUNS);
+           get_memory_size() >> 20, (unsigned long)TICKS_PER_SECOND, BUF_BYTES / 1024, RUNS,
+           (unsigned long)PhysicalAddr(arena), (unsigned long)PhysicalAddr(buf),
+           (unsigned long)PhysicalAddr(arena + SCRATCH_OFF), (unsigned long)PhysicalAddr(arena + SP_OFF));
     calibrate_rdp();
     debugf("MB,pattern,load,accesses,bytes_per,ticks_min,ticks_mean,ns_min,ns_mean,MBps_min,rdp_alone_us,rdp_us,rdp_started,rdp_busy_after\n");
-    run_all(true);
+    sweep1();
+    sweep2();
+    sweep3();
+    sweep5();
 
-    int metric = 0;
+    // Only now the RSP goes to rspq, for sweep 4 and the text. A SYNC_FULL
+    // interrupt may be pending from the raw passes; clear it so rdpq does not
+    // count it.
+    *(volatile uint32_t *)0xA4300000 = 0x800;   // MI_MODE: clear DP interrupt
+    rdpq_init();
+    rdpq_text_register_font(font_id, rdpq_font_load_builtin(FONT_BUILTIN_DEBUG_MONO));
+    sweep4();
+
+    int page = 0;
     while (1) {
-        show(metric);
+        show(page);
         joypad_poll();
         joypad_buttons_t b = joypad_get_buttons_pressed(JOYPAD_PORT_1);
-        if (b.b) metric ^= 1;
-        if (b.start) run_all(false);
+        if (b.a) page ^= 1;
     }
 }

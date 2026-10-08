@@ -5,10 +5,11 @@ include $(N64_INST)/include/n64.mk
 N64_CFLAGS += -O2 -std=gnu11
 
 src = src/main.c
+rsp = src/rsp_dmaloop.S
 
 all: membench.z64
 
-$(BUILD_DIR)/membench.elf: $(src:%.c=$(BUILD_DIR)/%.o)
+$(BUILD_DIR)/membench.elf: $(src:%.c=$(BUILD_DIR)/%.o) $(rsp:%.S=$(BUILD_DIR)/%.o)
 
 membench.z64: N64_ROM_TITLE = "MemBench"
 
