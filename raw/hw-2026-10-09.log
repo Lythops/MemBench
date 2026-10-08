@@ -1,0 +1,161 @@
+flash: uploading membench.z64 (192K) ...
+Uploading ROM [membench.z64]... done
+Save type set to [None]
+Boot mode set to [Bootloader -> ROM]
+flash: attached for 120s -- debugf() output follows.
+[Debug]: Started
+D64P sections: quads=233 binds=28 runs=19 pool=29 live=0 total=11990 issue=141/1395 calls=39 packs=24 reuse=0/0/0/0/0 swayq=0 swaydrop=0 flick=0 fskip=2 same=0 burning=0 cam=102 fp=257 rb=1072 rbk=51 rbp=158 rbw=333 rbo=180 rbl=203 rbf=1662 rbs=989 rbr=102 rbq=200 lt=333 pk=2624 sc=134 sk=2 sq=94 sco=24 sli=48 spk=48 ss=73 scl=180 sw=8 sm=4 sf=45 sh=8 su=220 fl=814 fs=71 fr=1 st=1180 rcp=1 rd=428
+D64P rebuilds: n=30394 cameraOnly=22015 proj=64 cells=184 quads=233 culled=53 scene=9a857423 pack=069b7c45 bb=1e738b65 pairs=544 packQuad=0 packLight=0 packStore=0 cullUs=2311 lightUs=1153 reuseMapUs=0 walkProbeUs=788 walkKept=184 hero=7990 depth=58 zoom=0 eye=10779 yaw=0 focus=18855 world=7267
+D64M f=60 over=21 tot=19271 max=40544 input=351/2568 turn=188/1308 rend=15981/32255 aud=227/713 wait=2494/11238 save=0/0 rdp=7513 tmem=719 tiles=208 spr=3 rects=11 actors=169 heap=5094048/5610536
+D64P sections: quads=248 binds=48 runs=40 pool=29 live=0 total=12405 issue=125/1280 calls=46 packs=23 reuse=0/0/0/0/0 swayq=3 swaydrop=0 flick=0 fskip=6 same=0 burning=0 cam=102 fp=256 rb=1176 rbk=48 rbp=149 rbw=368 rbo=190 rbl=204 rbf=1619 rbs=1238 rbr=118 rbq=218 lt=5 pk=2866 sc=116 sk=2 sq=68 sco=17 sli=37 spk=31 ss=88 scl=200 sw=8 sm=3 sf=24 sh=9 su=210 fl=870 fs=75 fr=24 st=1254 rcp=2 rd=412
+D64P rebuilds: n=30417 cameraOnly=22033 proj=64 cells=181 quads=248 culled=46 scene=9cc6ba27 pack=179dfa23 bb=940e2765 pairs=597 packQuad=0 packLight=0 packStore=0 cullUs=2311 lightUs=1154 reuseMapUs=0 walkProbeUs=788 walkKept=181 hero=7995 depth=58 zoom=0 eye=10787 yaw=0 focus=18872 world=7272
+D64M f=60 over=23 tot=19477 max=41539 input=290/2702 turn=171/1462 rend=17018/35227 aud=209/396 wait=1758/10693 save=0/0 rdp=8178 tmem=852 tiles=230 spr=2 rects=9 actors=182 heap=5094048/5610536
+D64P sections: quads=297 binds=105 runs=99 pool=29 live=0 total=17948 issue=302/2106 calls=88 packs=27 reuse=0/0/0/0/0 swayq=0 swaydrop=0 flick=0 fskip=5 same=0 burning=0 cam=102 fp=254 rb=1752 rbk=56 rbp=173 rbw=521 rbo=246 rbl=269 rbf=1845 rbs=2281 rbr=201 rbq=322 lt=135 pk=4141 sc=109 sk=2 sq=58 sco=13 sli=33 spk=25 ss=89 scl=210 sw=9 sm=3 sf=25 sh=8 su=216 fl=1187 fs=73 fr=37 st=2520 rcp=1 rd
+D64P rebuilds: n=30444 cameraOnly=22053 proj=112 cells=221 quads=297 culled=68 scene=e98d47f7 pack=65354708 bb=09ad6221 pairs=738 packQuad=0 packLight=0 packStore=0 cullUs=2312 lightUs=1154 reuseMapUs=0 walkProbeUs=788 walkKept=221 hero=8002 depth=58 zoom=0 eye=10798 yaw=0 focus=18890 world=7279
+D64M f=60 over=27 tot=24148 max=48117 input=362/2787 turn=202/1415 rend=22168/43501 aud=228/613 wait=1157/6865 save=0/0 rdp=9643 tmem=1536 tiles=276 spr=2 rects=9 actors=205 heap=5094048/5610536
+D64P sections: quads=220 binds=55 runs=46 pool=29 live=0 total=18123 issue=276/1401 calls=100 packs=29 reuse=0/0/0/0/0 swayq=0 swaydrop=0 flick=0 fskip=4 same=1 burning=0 cam=99 fp=257 rb=1835 rbk=61 rbp=189 rbw=515 rbo=264 rbl=272 rbf=1704 rbs=2537 rbr=211 rbq=343 lt=180 pk=4367 sc=93 sk=1 sq=50 sco=10 sli=28 spk=19 ss=72 scl=173 sw=9 sm=3 sf=25 sh=8 su=223 fl=1156 fs=92 fr=13 st=2748 rcp=1 rd=6
+D64P rebuilds: n=30473 cameraOnly=22075 proj=72 cells=173 quads=220 culled=54 scene=2aee7569 pack=a0091188 bb=88ad6221 pairs=550 packQuad=0 packLight=0 packStore=0 cullUs=2313 lightUs=1155 reuseMapUs=0 walkProbeUs=788 walkKept=173 hero=8009 depth=58 zoom=0 eye=10809 yaw=0 focus=18907 world=7284
+D64M f=60 over=29 tot=24620 max=47677 input=394/3055 turn=188/1525 rend=21865/43081 aud=237/632 wait=1905/8916 save=0/0 rdp=9441 tmem=1754 tiles=273 spr=1 rects=9 actors=198 heap=5094048/5610536
+D64P sharp: depth 2, 1 band(s) freed, 2819 upload(s) dropped, 512 KiB kept
+D64P sharp: rom:/x2/tiles_sewers.sprite 512x512 taken as strips, 1024 KiB loaded, 53 KiB heap free
+D64P sharp: rom:/x2/gnoll.sprite REFUSED, 565 KiB heap free
+D64P sharp: rom:/x2/rat.sprite REFUSED, 565 KiB heap free
+D64P sharp: rom:/x2/snake.sprite 512x32 in 1 band(s), 1056 KiB loaded, 533 KiB heap free
+D64P sharp: rom:/x2/mimic.sprite REFUSED, 533 KiB heap free
+D64C n=87 depth depth=2 now=0 pos=896 hp=25/25 lvl=2 exp=0 mobs=7 rng=800031
+D64P sections: quads=107 binds=48 runs=46 pool=0 live=0 total=8472 issue=98/628 calls=53 packs=20 reuse=0/0/0/0/0 swayq=0 swaydrop=0 flick=0 fskip=4 same=1 burning=0 cam=98 fp=322 rb=718 rbk=55 rbp=129 rbw=229 rbo=66 rbl=94 rbf=538 rbs=962 rbr=110 rbq=113 lt=142 pk=1799 sc=106 sk=1 sq=47 sco=9 sli=35 spk=23 ss=69 scl=70 sw=8 sm=3 sf=9 sh=8 su=245 fl=806 fs=80 fr=20 st=1280 rcp=1 rd=106 in=21 ir=1
+D64P rebuilds: n=30493 cameraOnly=22089 proj=32 cells=40 quads=107 culled=2 scene=f5975da3 pack=89b7c3bb bb=72ad6221 pairs=299 packQuad=0 packLight=0 packStore=0 cullUs=2312 lightUs=1155 reuseMapUs=0 walkProbeUs=788 walkKept=40 hero=8015 depth=59 zoom=0 eye=10818 yaw=0 focus=18919 world=7287
+D64M f=60 over=17 tot=21416 max=266585 input=289/2743 turn=1086/54390 rend=15422/209561 aud=216/545 wait=4347/11588 save=0/2 rdp=7449 tmem=1127 tiles=148 spr=1 rects=9 actors=83 heap=5078368/5610536
+D64P sections: quads=179 binds=46 runs=37 pool=1 live=1 total=7520 issue=98/121 calls=39 packs=20 reuse=0/0/0/0/0 swayq=18 swaydrop=0 flick=0 fskip=3 same=0 burning=0 cam=95 fp=344 rb=569 rbk=63 rbp=131 rbw=200 rbo=29 rbl=51 rbf=357 rbs=642 rbr=50 rbq=82 lt=330 pk=1441 sc=165 sk=2 sq=65 sco=14 sli=42 spk=31 ss=125 scl=34 sw=8 sm=3 sf=5 sh=8 su=206 fl=631 fs=62 fr=37 st=977 rcp=1 rd=436 in=17 ir=2
+D64P rebuilds: n=30513 cameraOnly=22102 proj=56 cells=65 quads=179 culled=0 scene=a5579257 pack=c0a8f215 bb=66cb6b2d pairs=460 packQuad=0 packLight=0 packStore=0 cullUs=2312 lightUs=1154 reuseMapUs=0 walkProbeUs=788 walkKept=65 hero=8022 depth=59 zoom=0 eye=10825 yaw=0 focus=18932 world=7291
+D64M f=60 over=11 tot=17569 max=39328 input=299/4302 turn=226/2220 rend=11115/32401 aud=215/628 wait=5685/12092 save=0/0 rdp=6361 tmem=870 tiles=111 spr=2 rects=10 actors=44 heap=5083408/5610536
+D64P sections: quads=170 binds=39 runs=34 pool=41 live=26 total=9170 issue=93/168 calls=48 packs=5 reuse=0/0/0/0/0 swayq=18 swaydrop=0 flick=0 fskip=6 same=1 burning=0 cam=94 fp=342 rb=211 rbk=15 rbp=32 rbw=55 rbo=12 rbl=18 rbf=156 rbs=210 rbr=16 rbq=30 lt=62 pk=653 sc=224 sk=2 sq=100 sco=25 sli=51 spk=49 ss=100 scl=33 sw=10 sm=8 sf=128 sh=9 su=241 fl=671 fs=69 fr=22 st=2239 rcp=1 rd=2761 in=13 i
+D64P rebuilds: n=30518 cameraOnly=22105 proj=56 cells=65 quads=170 culled=2 scene=a08415fe pack=3e2aa8d3 bb=5e43e951 pairs=433 packQuad=0 packLight=0 packStore=0 cullUs=2312 lightUs=1154 reuseMapUs=0 walkProbeUs=788 walkKept=65 hero=8023 depth=59 zoom=0 eye=10826 yaw=0 focus=18934 world=7293
+D64M f=60 over=4 tot=18032 max=98114 input=114/1784 turn=1312/66620 rend=12415/30665 aud=216/601 wait=3946/6239 save=0/0 rdp=9025 tmem=951 tiles=171 spr=3 rects=31 actors=82 heap=5083968/5610536
+D64P sections: quads=177 binds=42 runs=35 pool=41 live=5 total=11907 issue=100/195 calls=48 packs=24 reuse=0/0/0/0/0 swayq=18 swaydrop=0 flick=0 fskip=3 same=2 burning=0 cam=102 fp=354 rb=1046 rbk=78 rbp=152 rbw=251 rbo=65 rbl=92 rbf=753 rbs=1072 rbr=85 rbq=156 lt=203 pk=2598 sc=145 sk=2 sq=60 sco=13 sli=33 spk=24 ss=126 scl=39 sw=8 sm=8 sf=78 sh=9 su=221 fl=787 fs=69 fr=53 st=1599 rcp=1 rd=1104 
+D64P rebuilds: n=30542 cameraOnly=22124 proj=52 cells=65 quads=177 culled=0 scene=8f241144 pack=c8363dff bb=efad6221 pairs=455 packQuad=0 packLight=0 packStore=0 cullUs=2311 lightUs=1154 reuseMapUs=0 walkProbeUs=788 walkKept=65 hero=8028 depth=59 zoom=0 eye=10833 yaw=0 focus=18948 world=7297
+D64M f=60 over=21 tot=18293 max=35956 input=309/4551 turn=200/2092 rend=16157/32333 aud=211/672 wait=1387/10258 save=0/0 rdp=8869 tmem=957 tiles=181 spr=1 rects=15 actors=68 heap=5083968/5610536
+D64P sections: quads=158 binds=58 runs=50 pool=41 live=30 total=9917 issue=107/203 calls=46 packs=23 reuse=0/0/0/0/0 swayq=24 swaydrop=0 flick=0 fskip=3 same=0 burning=0 cam=100 fp=350 rb=746 rbk=72 rbp=149 rbw=220 rbo=42 rbl=67 rbf=580 rbs=760 rbr=67 rbq=110 lt=330 pk=1891 sc=121 sk=1 sq=48 sco=9 sli=28 spk=19 ss=64 scl=34 sw=8 sm=9 sf=148 sh=9 su=244 fl=762 fs=66 fr=17 st=2122 rcp=1 rd=119 in=1
+D64P rebuilds: n=30565 cameraOnly=22140 proj=24 cells=48 quads=158 culled=0 scene=3bd3b285 pack=b80d5115 bb=bf6d6221 pairs=408 packQuad=0 packLight=0 packStore=0 cullUs=2310 lightUs=1154 reuseMapUs=0 walkProbeUs=788 walkKept=48 hero=8035 depth=59 zoom=0 eye=10844 yaw=0 focus=18960 world=7304
+D64M f=60 over=13 tot=17233 max=37295 input=315/2239 turn=260/2384 rend=13774/29926 aud=192/571 wait=2659/9026 save=0/0 rdp=7612 tmem=986 tiles=138 spr=1 rects=31 actors=54 heap=5086208/5610536
+D64P sections: quads=142 binds=38 runs=30 pool=49 live=41 total=13831 issue=116/160 calls=50 packs=27 reuse=0/0/0/0/0 swayq=3 swaydrop=0 flick=0 fskip=1 same=1 burning=0 cam=102 fp=350 rb=976 rbk=86 rbp=170 rbw=258 rbo=49 rbl=79 rbf=859 rbs=937 rbr=90 rbq=150 lt=469 pk=2401 sc=141 sk=2 sq=52 sco=10 sli=30 spk=22 ss=161 scl=33 sw=8 sm=12 sf=227 sh=9 su=219 fl=842 fs=67 fr=46 st=3852 rcp=1 rd=711 i
+D64P rebuilds: n=30592 cameraOnly=22160 proj=12 cells=59 quads=142 culled=6 scene=8ca6e1ae pack=67d23073 bb=fca107fd pairs=349 packQuad=0 packLight=0 packStore=0 cullUs=2310 lightUs=1153 reuseMapUs=0 walkProbeUs=788 walkKept=59 hero=8042 depth=59 zoom=0 eye=10854 yaw=0 focus=18977 world=7310
+D64M f=60 over=17 tot=18673 max=37510 input=254/2247 turn=258/1978 rend=17149/33130 aud=193/507 wait=789/6398 save=0/0 rdp=8698 tmem=1062 tiles=159 spr=1 rects=49 actors=54 heap=5086768/5610536
+D64P sections: quads=210 binds=49 runs=39 pool=51 live=34 total=11199 issue=177/2060 calls=40 packs=16 reuse=0/0/0/0/0 swayq=13 swaydrop=0 flick=0 fskip=1 same=2 burning=0 cam=96 fp=346 rb=536 rbk=50 rbp=102 rbw=159 rbo=37 rbl=57 rbf=517 rbs=575 rbr=52 rbq=87 lt=364 pk=1316 sc=179 sk=2 sq=72 sco=16 sli=38 spk=34 ss=135 scl=33 sw=8 sm=11 sf=242 sh=9 su=204 fl=630 fs=63 fr=32 st=3585 rcp=1 rd=988 i
+D64P rebuilds: n=30608 cameraOnly=22171 proj=36 cells=89 quads=210 culled=4 scene=1529a358 pack=e07a5c39 bb=f68157c9 pairs=526 packQuad=0 packLight=0 packStore=0 cullUs=2309 lightUs=1153 reuseMapUs=0 walkProbeUs=788 walkKept=89 hero=8045 depth=59 zoom=0 eye=10859 yaw=0 focus=18986 world=7315
+D64M f=60 over=11 tot=16882 max=35070 input=121/2013 turn=236/2055 rend=13969/31571 aud=192/435 wait=2334/7290 save=0/0 rdp=8079 tmem=983 tiles=152 spr=2 rects=49 actors=69 heap=5089568/5610536
+D64P sections: quads=117 binds=26 runs=20 pool=51 live=3 total=10985 issue=90/216 calls=47 packs=24 reuse=0/0/0/0/0 swayq=3 swaydrop=0 flick=0 fskip=2 same=3 burning=0 cam=104 fp=355 rb=949 rbk=76 rbp=156 rbw=260 rbo=75 rbl=107 rbf=830 rbs=1063 rbr=95 rbq=157 lt=341 pk=2306 sc=136 sk=2 sq=56 sco=11 sli=32 spk=21 ss=117 scl=34 sw=8 sm=8 sf=113 sh=9 su=252 fl=781 fs=80 fr=15 st=1761 rcp=1 rd=310 in
+D64P rebuilds: n=30632 cameraOnly=22188 proj=12 cells=69 quads=117 culled=9 scene=8ff043bd pack=41faa68f bb=516d6221 pairs=295 packQuad=0 packLight=0 packStore=0 cullUs=2309 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=69 hero=8052 depth=59 zoom=0 eye=10868 yaw=0 focus=19000 world=7321
+D64M f=60 over=18 tot=18279 max=39785 input=320/2402 turn=304/3979 rend=14790/32950 aud=213/694 wait=2623/10945 save=0/0 rdp=8029 tmem=948 tiles=179 spr=1 rects=17 actors=84 heap=5090128/5610536
+D64P sections: quads=260 binds=62 runs=53 pool=51 live=16 total=11299 issue=129/330 calls=52 packs=24 reuse=0/0/0/0/0 swayq=7 swaydrop=0 flick=0 fskip=0 same=4 burning=0 cam=98 fp=353 rb=999 rbk=76 rbp=155 rbw=287 rbo=80 rbl=123 rbf=794 rbs=1194 rbr=107 rbq=163 lt=484 pk=2366 sc=141 sk=2 sq=62 sco=12 sli=32 spk=25 ss=123 scl=34 sw=9 sm=5 sf=65 sh=8 su=281 fl=809 fs=76 fr=25 st=1515 rcp=1 rd=449 i
+D64P rebuilds: n=30656 cameraOnly=22205 proj=92 cells=119 quads=260 culled=4 scene=ef70e061 pack=a1425c03 bb=df9771fd pairs=661 packQuad=0 packLight=0 packStore=0 cullUs=2308 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=119 hero=8057 depth=59 zoom=0 eye=10876 yaw=0 focus=19016 world=7328
+D64M f=60 over=19 tot=19389 max=45407 input=224/2261 turn=308/2556 rend=15221/39240 aud=223/432 wait=3383/11662 save=0/0 rdp=7947 tmem=994 tiles=177 spr=1 rects=11 actors=93 heap=5090688/5610536
+D64P sections: quads=253 binds=61 runs=47 pool=51 live=5 total=15565 issue=236/2669 calls=80 packs=16 reuse=0/0/0/0/0 swayq=3 swaydrop=0 flick=0 fskip=2 same=4 burning=0 cam=102 fp=350 rb=1077 rbk=51 rbp=100 rbw=214 rbo=79 rbl=105 rbf=842 rbs=1159 rbr=126 rbq=193 lt=235 pk=2475 sc=183 sk=2 sq=76 sco=20 sli=41 spk=38 ss=190 scl=33 sw=8 sm=7 sf=116 sh=8 su=202 fl=1245 fs=75 fr=58 st=3224 rcp=1 rd=1
+D64P rebuilds: n=30672 cameraOnly=22216 proj=100 cells=121 quads=253 culled=11 scene=87fd8eb7 pack=0b349c9f bb=d18323c1 pairs=639 packQuad=0 packLight=0 packStore=0 cullUs=2309 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=121 hero=8062 depth=59 zoom=0 eye=10880 yaw=0 focus=19025 world=7332
+D64M f=60 over=16 tot=21237 max=46322 input=224/4526 turn=274/2646 rend=19194/42473 aud=236/612 wait=1280/5099 save=0/0 rdp=10808 tmem=1374 tiles=276 spr=2 rects=25 actors=125 heap=5092368/5610536
+D64P sections: quads=189 binds=47 runs=38 pool=51 live=11 total=12620 issue=137/228 calls=68 packs=15 reuse=0/0/0/0/0 swayq=3 swaydrop=0 flick=0 fskip=4 same=1 burning=0 cam=97 fp=341 rb=748 rbk=47 rbp=94 rbw=197 rbo=65 rbl=91 rbf=621 rbs=874 rbr=80 rbq=122 lt=229 pk=1774 sc=178 sk=2 sq=84 sco=23 sli=45 spk=43 ss=182 scl=33 sw=8 sm=7 sf=129 sh=9 su=218 fl=1038 fs=82 fr=52 st=2287 rcp=1 rd=2137 in
+D64P rebuilds: n=30687 cameraOnly=22227 proj=84 cells=127 quads=189 culled=23 scene=1b834870 pack=5e681f37 bb=0278a305 pairs=467 packQuad=0 packLight=0 packStore=0 cullUs=2308 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=127 hero=8066 depth=59 zoom=0 eye=10885 yaw=0 focus=19034 world=7336
+D64M f=60 over=15 tot=19210 max=40651 input=194/1903 turn=251/2591 rend=16359/35842 aud=225/496 wait=2151/6398 save=0/0 rdp=9610 tmem=1260 tiles=220 spr=3 rects=24 actors=117 heap=5093488/5610536
+D64P sections: quads=221 binds=46 runs=39 pool=51 live=23 total=11105 issue=138/205 calls=61 packs=16 reuse=0/0/0/0/0 swayq=0 swaydrop=0 flick=0 fskip=3 same=4 burning=0 cam=100 fp=347 rb=835 rbk=51 rbp=102 rbw=238 rbo=100 rbl=117 rbf=784 rbs=1032 rbr=89 rbq=142 lt=237 pk=1963 sc=202 sk=2 sq=109 sco=28 sli=54 spk=55 ss=106 scl=34 sw=8 sm=6 sf=80 sh=8 su=209 fl=873 fs=69 fr=2 st=1941 rcp=1 rd=729 
+D64P rebuilds: n=30703 cameraOnly=22239 proj=96 cells=155 quads=221 culled=59 scene=523f2ce1 pack=a3b3495f bb=bab6386d pairs=559 packQuad=0 packLight=0 packStore=0 cullUs=2308 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=155 hero=8070 depth=59 zoom=0 eye=10892 yaw=0 focus=19044 world=7340
+D64M f=60 over=16 tot=18865 max=42184 input=150/1924 turn=202/1504 rend=15751/35633 aud=211/525 wait=2518/8614 save=0/0 rdp=8603 tmem=1085 tiles=222 spr=4 rects=14 actors=149 heap=5094048/5610536
+D64P sections: quads=223 binds=55 runs=39 pool=51 live=10 total=11114 issue=132/187 calls=62 packs=6 reuse=0/0/0/0/0 swayq=2 swaydrop=0 flick=0 fskip=2 same=4 burning=0 cam=96 fp=335 rb=307 rbk=18 rbp=38 rbw=86 rbo=37 rbl=44 rbf=290 rbs=408 rbr=34 rbq=51 lt=239 pk=726 sc=230 sk=2 sq=110 sco=29 sli=56 spk=57 ss=99 scl=32 sw=8 sm=8 sf=136 sh=8 su=209 fl=870 fs=69 fr=19 st=2675 rcp=1 rd=3266 in=13 i
+D64P rebuilds: n=30709 cameraOnly=22241 proj=88 cells=142 quads=223 culled=32 scene=ee31a8ea pack=6280eaa5 bb=acb8ac51 pairs=560 packQuad=0 packLight=0 packStore=0 cullUs=2309 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=142 hero=8071 depth=59 zoom=0 eye=10893 yaw=0 focus=19046 world=7344
+D64M f=60 over=6 tot=18610 max=78577 input=89/516 turn=878/41775 rend=14254/36769 aud=228/635 wait=3132/6130 save=0/0 rdp=9666 tmem=1245 tiles=219 spr=4 rects=28 actors=157 heap=5094048/5610536
+D64P sections: quads=223 binds=51 runs=43 pool=51 live=4 total=11284 issue=213/1426 calls=63 packs=9 reuse=0/0/0/0/0 swayq=0 swaydrop=0 flick=0 fskip=4 same=3 burning=0 cam=97 fp=336 rb=472 rbk=28 rbp=57 rbw=134 rbo=54 rbl=65 rbf=438 rbs=579 rbr=51 rbq=79 lt=179 pk=1117 sc=198 sk=2 sq=106 sco=29 sli=55 spk=56 ss=126 scl=33 sw=8 sm=7 sf=84 sh=8 su=208 fl=999 fs=76 fr=36 st=2125 rcp=1 rd=2683 in=13
+D64P rebuilds: n=30718 cameraOnly=22246 proj=112 cells=146 quads=223 culled=45 scene=0108c4cc pack=af1a23dd bb=e64080c9 pairs=564 packQuad=0 packLight=0 packStore=0 cullUs=2309 lightUs=1153 reuseMapUs=0 walkProbeUs=787 walkKept=146 hero=8075 depth=59 zoom=0 eye=10896 yaw=0 focus=19052 world=7348
+D64M f=60 over=9 tot=18329 max=40853 input=107/745 turn=409/12146 rend=14685/35847 aud=216/504 wait=2881/6162 save=0/0 rdp=9510 tmem=1247 tiles=222 spr=4 rects=16 actors=146 heap=5094048/5610536
+MB,# MemBench sweep 1: tv=PAL mem=8 MiB ticks/s=46875000 buf=256 KiB runs=5
+MB,# fill pass: 8 layers 5782.7 us -> 110 layers (722.8 us per 320x240x16 layer, 212 MB/s)
+MB,pattern,load,accesses,bytes_per,ticks_min,ticks_mean,ns_min,ns_mean,MBps_min,rdp_alone_us,rdp_us,rdp_started,rdp_busy_after
+MB,u32r,vioff,65536,4,1119287,1119323,364.4,364.4,11.0,0.0,0.0,0,0
+MB,u64r,vioff,32768,8,590962,591016,384.7,384.8,20.8,0.0,0.0,0,0
+MB,u32w,vioff,65536,4,548404,548509,178.5,178.6,22.4,0.0,0.0,0,0
+MB,u64w,vioff,32768,8,299358,299381,194.9,194.9,41.0,0.0,0.0,0,0
+MB,u32r_s64,vioff,65536,4,1200871,1200909,390.9,390.9,10.2,0.0,0.0,0,0
+MB,u32r_s4k,vioff,65536,4,1445650,1445678,470.6,470.6,8.5,0.0,0.0,0,0
+MB,cr16,vioff,16384,16,311666,312005,405.8,406.3,39.4,0.0,0.0,0,0
+MB,cw16,vioff,16384,32,647089,647252,842.6,842.8,38.0,0.0,0.0,0,0
+MB,# fill pass alone (110 layers): VI off 78702.2 us, VI on 84977.0 us
+VI WARNING: __vblank_interrupt outside of vblank period: 112
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+MB,u32r,idle,65536,4,1191456,1197490,387.8,389.8,10.3,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 116
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+MB,u64r,idle,32768,8,626164,632403,407.7,411.7,19.6,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 352
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+MB,u32w,idle,65536,4,590109,594565,192.1,193.5,20.8,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+MB,u64w,idle,32768,8,318045,325892,207.1,212.2,38.6,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 556
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 100
+MB,u32r_s64,idle,65536,4,1264677,1271832,411.7,414.0,9.7,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 620
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 478
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 100
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+MB,u32r_s4k,idle,65536,4,1519611,1525896,494.7,496.7,8.1,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+MB,cr16,idle,16384,16,327457,331083,426.4,431.1,37.5,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+VI WARNING: __vblank_interrupt outside of vblank period: 94
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 434
+MB,cw16,idle,16384,32,673028,679048,876.3,884.2,36.5,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 294
+MB,u32r,rdpfill,65536,4,1790592,1794160,582.9,584.0,6.9,84977.0,103221.4,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 516
+VI WARNING: __vblank_interrupt outside of vblank period: 346
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+MB,u64r,rdpfill,32768,8,896923,901361,583.9,586.8,13.7,84977.0,94554.6,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 206
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 64
+VI WARNING: __vblank_interrupt outside of vblank period: 618
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+MB,u32w,rdpfill,65536,4,1569535,1573326,510.9,512.2,7.8,84977.0,97681.4,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+VI WARNING: __vblank_interrupt outside of vblank period: 512
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+MB,u64w,rdpfill,32768,8,784023,784919,510.4,511.0,15.7,84977.0,91746.4,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 346
+VI WARNING: __vblank_interrupt outside of vblank period: 444
+VI WARNING: __vblank_interrupt outside of vblank period: 542
+MB,u32r_s64,rdpfill,65536,4,1792880,1795962,583.6,584.6,6.9,84977.0,103167.6,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 238
+VI WARNING: __vblank_interrupt outside of vblank period: 368
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+MB,u32r_s4k,rdpfill,65536,4,1800235,1804338,586.0,587.3,6.8,84977.0,104126.4,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+MB,cr16,rdpfill,16384,16,447076,452236,582.1,588.8,27.5,84977.0,89050.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 444
+VI WARNING: __vblank_interrupt outside of vblank period: 274
+VI WARNING: __vblank_interrupt outside of vblank period: 104
+MB,cw16,rdpfill,16384,32,912265,916162,1187.8,1192.9,26.9,84977.0,93181.4,5,5
+MB,# done
+[Debug]: Stopped
