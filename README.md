@@ -37,7 +37,9 @@ workspace root.
 | `M3,` | 3: the other client's region moved across a 4 MiB arena (placement) |
 | `M5,` | 5: uncached read stride 4 B to 32 KiB (the row) |
 | `M7,` | 7: the RDP pass as fill, LOAD_TILE, or Z-buffered textured rects, against CPU and RSP |
+| `M8,` | 8: texture loads: LOAD_TILE vs LOAD_BLOCK, RGBA16/RGBA32/I8, 32 B vs 512 B rows (built, awaiting a console run) |
 | `M6,` | 6: the VI at 320x240x16/x32 and 640x480x16/x32, seen by the CPU and the RDP |
+| `M6b,` | 6b: the VI's framebuffer inside the CPU's 1 MiB block vs elsewhere (built, awaiting a console run) |
 | `M4,` | 4: the fill fed through rspq instead of straight from RDRAM |
 
 Every row prints raw tick counts beside derived figures. RDP rows carry
@@ -47,11 +49,11 @@ the window outlasted the pass.
 ## Build and run
 
     /c/msys64/usr/bin/bash -lc "/c/Nintendo64/MemBench/build.sh"
-    /c/Nintendo64/tools/flash.sh -d --secs 170 membench.z64 > raw/hw-<date>.log
-    grep '^M[B2-7],' raw/hw-<date>.log > results-hw-<date>.csv
+    /c/Nintendo64/tools/flash.sh -d --secs 200 membench.z64 > raw/hw-<date>.log
+    grep -E '^M[B2-8]b?,' raw/hw-<date>.log > results-hw-<date>.csv
 
 Press Reset promptly after the upload: an SC64 upload does not restart the
-console, and the run takes about 60 s. The TV is black while the sweeps run
+console, and the run takes about 80 s. The TV is black while the sweeps run
 (the RSP is busy with the DMA ucode, so there is no text until the end),
 flickers through the video modes near the end, then shows two result pages
 (A flips between them).
