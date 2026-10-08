@@ -23,5 +23,5 @@ sleep "$SECS"
 kill "$ARES_PID" > /dev/null 2>&1
 [ -n "$ARES_WPID" ] && taskkill //F //PID "$ARES_WPID" > /dev/null 2>&1
 cp "$WORK/ares.log" "$OUT"
-grep '^M[B2-7],' "$OUT"
+grep -E '^M[B2-8]b?,' "$OUT"
 echo "full log: $OUT" >&2

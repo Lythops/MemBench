@@ -39,8 +39,21 @@
 #define PI_OFF        (3328 * 1024) // the PI's destination, 1 MiB at the top of the arena
 #define RDP_CMD_QWORDS (32 * 1024)  // 256 KiB of RDP commands: enough for ~16k LOAD_TILEs
 
-enum { K_FILL, K_LOAD, K_RECTZ, N_KIND };    // what the RDP does in a pass
-static const char *KIND_NAME[] = { "fill", "load", "rectz" };
+// What the RDP does in a pass. The first three are sweep 7's; the rest are
+// texture-load variants for sweep 8, each moving 4 KiB per unit.
+enum { K_FILL, K_LOAD, K_RECTZ, K_LOADBLK, K_LOAD32, K_LOADI8, K_LOADNARROW, K_LOADWIDE, N_KIND };
+static const char *KIND_NAME[] = { "fill", "load", "rectz", "loadblk", "load32", "loadi8", "loadnarrow", "loadwide" };
+
+typedef struct { uint64_t fmtsiz; int line_qw; int w, h; bool block; } loadvar_t;
+#define SIZ(fmt, siz) (((uint64_t)(fmt) << 53) | ((uint64_t)(siz) << 51))
+static const loadvar_t LOADVAR[N_KIND] = {
+    [K_LOAD]       = { SIZ(0, 2), 16, 64,   32, false },    // RGBA16 64x32, 128 B rows: the baseline
+    [K_LOADBLK]    = { SIZ(0, 2), 16, 2048, 1,  true  },    // the same 4 KiB as one LOAD_BLOCK
+    [K_LOAD32]     = { SIZ(0, 3), 16, 32,   32, false },    // RGBA32 32x32
+    [K_LOADI8]     = { SIZ(4, 1), 8,  64,   64, false },    // I8 64x64
+    [K_LOADNARROW] = { SIZ(0, 2), 4,  16,   128, false },   // RGBA16 16x128: 128 rows of 32 B
+    [K_LOADWIDE]   = { SIZ(0, 2), 64, 256,  8,  false },    // RGBA16 256x8: 8 rows of 512 B
+};
 #define TEX_W 64
 #define TEX_H 32
 #define TEXEL 0x1234                // the texture source is filled with this RGBA16 value
@@ -230,11 +243,14 @@ static void build_rdp_list(int kind, int n, void *target) {
         for (int i = 0; i < n; i++)                                                     // FILL_RECTANGLE, lower-right inclusive in fill mode
             rdp_cmds[k++] = CMD(0x36) | ((uint64_t)((SCREEN_W - 1) * 4) << 44) | ((uint64_t)((SCREEN_H - 1) * 4) << 32);
     } else {
-        // tile 0: RGBA16, 64 texels a line = 128 B = 16 qwords, TMEM 0, masks 6/5 so the rect wraps it
-        uint64_t set_tile = CMD(0x35) | FMT_RGBA16_SIZ | (16ull << 41) | (0ull << 24) | (5ull << 14) | (6ull << 4);
-        uint64_t set_tex  = CMD(0x3D) | FMT_RGBA16_SIZ | ((uint64_t)(TEX_W - 1) << 32) | taddr;
-        uint64_t load     = CMD(0x34) | (0ull << 44) | (0ull << 32) | (0ull << 24) | ((uint64_t)((TEX_W - 1) * 4) << 12) | ((TEX_H - 1) * 4);
-        if (kind == K_LOAD) {
+        // tile 0 at TMEM 0, masks 6/5 so the rect wraps the 64x32 baseline tile
+        const loadvar_t *v = &LOADVAR[kind == K_RECTZ ? K_LOAD : kind];
+        uint64_t set_tile = CMD(0x35) | v->fmtsiz | ((uint64_t)v->line_qw << 41) | (0ull << 24) | (5ull << 14) | (6ull << 4);
+        uint64_t set_tex  = CMD(0x3D) | v->fmtsiz | ((uint64_t)((v->block ? 64 : v->w) - 1) << 32) | taddr;
+        uint64_t load     = v->block
+            ? CMD(0x33) | ((uint64_t)(v->w - 1) << 12)                                           // LOAD_BLOCK 0..w-1 texels, dxt 0
+            : CMD(0x34) | ((uint64_t)((v->w - 1) * 4) << 12) | ((v->h - 1) * 4);                // LOAD_TILE 0,0 .. w-1,h-1
+        if (kind != K_RECTZ) {
             rdp_cmds[k++] = CMD(0x2F) | SOM_CYCLE_1;
             rdp_cmds[k++] = set_tex;
             rdp_cmds[k++] = set_tile;
@@ -272,8 +288,8 @@ static void build_rdp_list(int kind, int n, void *target) {
 static float pass_bytes(int kind, int n) {
     switch (kind) {
     case K_FILL:  return (float)n * SCREEN_W * SCREEN_H * 2;
-    case K_LOAD:  return (float)n * TEX_W * TEX_H * 2;
-    default:      return (float)n * SCREEN_W * SCREEN_H * 2 * 3 + SCREEN_W * SCREEN_H * 2;  // colour w, Z r, Z w; plus the clear
+    case K_RECTZ: return (float)n * SCREEN_W * SCREEN_H * 2 * 3 + SCREEN_W * SCREEN_H * 2;  // colour w, Z r, Z w; plus the clear
+    default:      return (float)n * 4096;                                                  // every load variant moves 4 KiB
     }
 }
 
@@ -309,8 +325,8 @@ static float time_fill_alone(void) {
 
 // Size each kind of pass so it lasts about RDP_TARGET_US; the CPU windows are shorter.
 static int rdp_n[N_KIND];
-static const int CAL_N[N_KIND]   = { 8, 256, 8 };
-static const int MAX_N[N_KIND]   = { RDP_MAX_LAYERS, 16000, RDP_MAX_LAYERS };
+static const int CAL_N[N_KIND]   = { 8, 256, 8, 256, 256, 256, 256, 256 };
+static const int MAX_N[N_KIND]   = { RDP_MAX_LAYERS, 16000, RDP_MAX_LAYERS, 16000, 16000, 16000, 16000, 16000 };
 
 static void calibrate_rdp(void) {
     for (int kind = 0; kind < N_KIND; kind++) {
@@ -657,7 +673,7 @@ static void sweep4(void) {
 
 static void sweep7(void) {
     debugf("M7,kind,cell,units,bytes_per_pass,win_us,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_mean,tmem_us_mean,rdp_MBps_alone,rdp_started,rdp_busy_after\n");
-    for (int kind = 0; kind < N_KIND; kind++) {
+    for (int kind = 0; kind <= K_RECTZ; kind++) {
         struct { const char *name; cfg_t cfg; } cells[] = {
             { "alone",   { .cpu = NULL,         .rdp = true, .rdp_kind = kind } },
             { "cpu",     { .cpu = &PATTERNS[0], .rdp = true, .rdp_kind = kind } },
@@ -682,6 +698,73 @@ static void sweep7(void) {
         }
     }
     debugf("M7,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 8: texture loads in detail
+//
+// LOAD_TILE of a 16-bit texture ran at one texel a clock. Is that the texel
+// or the byte? Does LOAD_BLOCK (the 64-bit path) do better? Do short rows
+// cost? Every variant moves 4 KiB a unit; alone and against CPU reads.
+
+static void sweep8(void) {
+    debugf("M8,kind,cell,units,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,tmem_us_mean,us_per_4k,MBps_alone,tmem_frac,rdp_started,rdp_busy_after\n");
+    static const int KINDS[] = { K_LOAD, K_LOADBLK, K_LOAD32, K_LOADI8, K_LOADNARROW, K_LOADWIDE };
+    for (int i = 0; i < 6; i++) {
+        int kind = KINDS[i];
+        meas_t alone, cpu;
+        cfg_t c_alone = { .cpu = NULL,         .rdp = true, .rdp_kind = kind };
+        cfg_t c_cpu   = { .cpu = &PATTERNS[0], .rdp = true, .rdp_kind = kind };
+        measure(&alone, &c_alone);
+        measure(&cpu, &c_cpu);
+        float alone_us = alone.rdp_us_sum / RUNS;
+        // Ares reads 0 for the counters: never divide by the pass time unguarded (the FPU traps).
+        float mbps  = alone_us > 0 ? pass_bytes(kind, rdp_n[kind]) / alone_us : 0;
+        float tfrac = alone_us > 0 ? alone.tmem_us_sum / RUNS / alone_us : 0;
+        debugf("M8,%s,alone,%d,%.1f,0,0,%.1f,%.1f,%.1f,%.2f,%.1f,%.3f,%d,%d\n", KIND_NAME[kind], rdp_n[kind], alone.win_us_sum / RUNS,
+               alone_us, alone_us, alone.tmem_us_sum / RUNS, alone_us / rdp_n[kind], mbps, tfrac, alone.rdp_started, alone.rdp_busy_after);
+        debugf("M8,%s,cpu,%d,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.2f,%.1f,%.3f,%d,%d\n", KIND_NAME[kind], rdp_n[kind], cpu.win_us_sum / RUNS,
+               ns_per(cpu.cpu_ticks_min, cpu.cpu_n), ns_per(cpu.cpu_ticks_sum / RUNS, cpu.cpu_n),
+               alone_us, cpu.rdp_us_sum / RUNS, cpu.tmem_us_sum / RUNS, alone_us / rdp_n[kind], mbps, tfrac, cpu.rdp_started, cpu.rdp_busy_after);
+    }
+    debugf("M8,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 6b: the VI's buffer in the CPU's block
+//
+// Sweep 6 had the framebuffer in another block. Point the VI (320x240x16) at
+// a buffer inside the CPU's 1 MiB block instead, by poking VI_ORIGIN, and
+// read it back after the window to be sure it stuck.
+
+static void sweep6b(void) {
+    volatile uint32_t *VI_ORIGIN_REG = (volatile uint32_t *)0xA4400004;
+    // The display driver re-shows its own buffer every vblank, so it has to
+    // go: the VI is driven directly for these two measurements. Buffer 0 is
+    // in another block (the baseline), buffer 1 in the CPU's block.
+    display_close();
+    void *fbs[2] = { arena, arena + CPU_OFF + 512 * 1024 };
+    for (int i = 0; i < 2; i++) memset(UncachedAddr(fbs[i]), 0, SCREEN_W * SCREEN_H * 2);
+    debugf("M6b,fb_phys,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after\n");
+    const pattern_t *pats[] = { &PATTERNS[0], &PATTERNS[1], &PATTERNS[2], PAT_CR16 };
+    for (int which = 0; which < 2; which++) {
+        void *shown = fbs[which];
+        uint32_t origin = PhysicalAddr(shown);
+        vi_set_origin(shown, SCREEN_W, 16);
+        wait_ms(100);
+        for (int p = 0; p < 4; p++) {
+            meas_t m;
+            cfg_t c = { .cpu = pats[p] };
+            measure(&m, &c);
+            debugf("M6b,%08lx,%s,%.1f,%.1f,0,%08lx\n", (unsigned long)origin, pats[p]->name,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n), (unsigned long)*VI_ORIGIN_REG);
+        }
+        meas_t m;
+        cfg_t c = { .cpu = NULL, .rdp = true };
+        measure(&m, &c);
+        debugf("M6b,%08lx,rdp_fill,0,0,%.1f,%08lx\n", (unsigned long)origin, m.rdp_us_sum / RUNS, (unsigned long)*VI_ORIGIN_REG);
+    }
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    clear_screen();
+    debugf("M6b,# done\n");
 }
 
 // ------------------------------------------------------------------ sweep 6: the VI by mode
@@ -814,7 +897,9 @@ int main(void) {
     sweep3();
     sweep5();
     sweep7();
+    sweep8();
     sweep6();
+    sweep6b();
 
     // Only now the RSP goes to rspq, for sweep 4 and the text. A SYNC_FULL
     // interrupt may be pending from the raw passes; clear it so rdpq does not
