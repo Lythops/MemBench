@@ -733,34 +733,48 @@ static void sweep8(void) {
 //
 // Sweep 6 had the framebuffer in another block. Point the VI (320x240x16) at
 // a buffer inside the CPU's 1 MiB block instead, by poking VI_ORIGIN, and
-// read it back after the window to be sure it stuck.
+// read it back after the window to be sure it stuck. A third state leaves
+// the VI in blank mode (sync, no picture) to price that state too.
 
 static void sweep6b(void) {
+    volatile uint32_t *VI_CTRL_REG   = (volatile uint32_t *)0xA4400000;
     volatile uint32_t *VI_ORIGIN_REG = (volatile uint32_t *)0xA4400004;
+    volatile uint32_t *VI_HVIDEO_REG = (volatile uint32_t *)0xA4400024;
     // The display driver re-shows its own buffer every vblank, so it has to
-    // go: the VI is driven directly for these two measurements. Buffer 0 is
-    // in another block (the baseline), buffer 1 in the CPU's block.
+    // go: the VI is driven directly for these measurements. Buffer 0 is in
+    // another block (the baseline), buffer 1 in the CPU's block.
+    //
+    // Run g (2026-10-09) measured this with the VI in BLANK mode: in the
+    // preview SDK display_close() ends in vi_show(NULL), which blanks, and
+    // vi_set_origin() does not un-blank (only vi_show / vi_blank do). The
+    // origin read-back cannot see that. So: vi_blank(false) after the
+    // origin, VI_CTRL and VI_H_VIDEO printed beside it, and a third state
+    // that measures blank mode on purpose.
     display_close();
     void *fbs[2] = { arena, arena + CPU_OFF + 512 * 1024 };
     for (int i = 0; i < 2; i++) memset(UncachedAddr(fbs[i]), 0, SCREEN_W * SCREEN_H * 2);
-    debugf("M6b,fb_phys,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after\n");
+    debugf("M6b,fb_phys,state,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after,vi_ctrl_after,vi_hvideo_after\n");
     const pattern_t *pats[] = { &PATTERNS[0], &PATTERNS[1], &PATTERNS[2], PAT_CR16 };
-    for (int which = 0; which < 2; which++) {
-        void *shown = fbs[which];
+    static const char *STATE[] = { "shown", "shown", "blank" };
+    for (int which = 0; which < 3; which++) {
+        void *shown = fbs[which == 2 ? 0 : which];
         uint32_t origin = PhysicalAddr(shown);
         vi_set_origin(shown, SCREEN_W, 16);
+        vi_blank(which == 2);
         wait_ms(100);
         for (int p = 0; p < 4; p++) {
             meas_t m;
             cfg_t c = { .cpu = pats[p] };
             measure(&m, &c);
-            debugf("M6b,%08lx,%s,%.1f,%.1f,0,%08lx\n", (unsigned long)origin, pats[p]->name,
-                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n), (unsigned long)*VI_ORIGIN_REG);
+            debugf("M6b,%08lx,%s,%s,%.1f,%.1f,0,%08lx,%08lx,%08lx\n", (unsigned long)origin, STATE[which], pats[p]->name,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n),
+                   (unsigned long)*VI_ORIGIN_REG, (unsigned long)*VI_CTRL_REG, (unsigned long)*VI_HVIDEO_REG);
         }
         meas_t m;
         cfg_t c = { .cpu = NULL, .rdp = true };
         measure(&m, &c);
-        debugf("M6b,%08lx,rdp_fill,0,0,%.1f,%08lx\n", (unsigned long)origin, m.rdp_us_sum / RUNS, (unsigned long)*VI_ORIGIN_REG);
+        debugf("M6b,%08lx,%s,rdp_fill,0,0,%.1f,%08lx,%08lx,%08lx\n", (unsigned long)origin, STATE[which], m.rdp_us_sum / RUNS,
+               (unsigned long)*VI_ORIGIN_REG, (unsigned long)*VI_CTRL_REG, (unsigned long)*VI_HVIDEO_REG);
     }
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
     clear_screen();

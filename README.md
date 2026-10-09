@@ -8,7 +8,7 @@ measures them on a console and prints every cell as a CSV line.
 Sibling of `FillBench/` (the RDP side). Same pattern: an LLM-written sweep,
 timed on hardware, captured over a SummerCart64, kept as CSV in the repo.
 
-## Findings (PAL console, Expansion Pak, 2026-10-09, six runs)
+## Findings (PAL console, Expansion Pak, 2026-10-09, eight runs)
 
 - **RDRAM conflicts live in 1 MiB-aligned blocks.** Another client whose
   memory shares the CPU's 1 MiB block costs the CPU +40 to +50% per access
@@ -18,12 +18,18 @@ timed on hardware, captured over a SummerCart64, kept as CSV in the repo.
   whatever it is doing. The PI at 5 MB/s is noise.
 - **Uncached 32-bit read 364 ns; 64-bit read 385; a 16 B cached line fill
   406:** the same price for 4, 8 or 16 bytes. Uncached writes 179 ns.
-- **Fill mode 215 MB/s; RSP DMA 381 MB/s read, 397 write; LOAD_TILE of a
-  16-bit texture 133 MB/s (one texel a clock, TMEM-bound); a Z-buffered
+- **Fill mode 215 MB/s; RSP DMA 381 MB/s read, 397 write; a Z-buffered
   textured pixel 59 ns.**
+- **Texture loads move ~2.2 bytes an RDP clock whatever the format**
+  (RGBA16, RGBA32 and I8 alike): 4 KiB in 29-32 us. LOAD_BLOCK is 8% faster
+  than LOAD_TILE only because it has one row; each row costs 85 ns, and 32 B
+  rows are latency-bound at half speed. Loads cost the CPU +15% (LOAD_BLOCK)
+  to +36% (64 rows) per access and lose 2% themselves.
 - **The VI costs bytes per scanline:** 320x240x16 takes 5% of the CPU and 7%
   of the RDP; 320x240x32 and 640x480x16 take 11% / 16%; 640x480x32 takes
-  30% / 42%.
+  30% / 42%. The framebuffer inside the CPU's 1 MiB block adds only 2.6%
+  per CPU read; a blanked VI (sync kept, no picture) still costs half of a
+  shown one.
 
 Full analysis, tables and the follow-up list: `reference/membench.md` in the
 workspace root.
@@ -37,9 +43,9 @@ workspace root.
 | `M3,` | 3: the other client's region moved across a 4 MiB arena (placement) |
 | `M5,` | 5: uncached read stride 4 B to 32 KiB (the row) |
 | `M7,` | 7: the RDP pass as fill, LOAD_TILE, or Z-buffered textured rects, against CPU and RSP |
-| `M8,` | 8: texture loads: LOAD_TILE vs LOAD_BLOCK, RGBA16/RGBA32/I8, 32 B vs 512 B rows (built, awaiting a console run) |
+| `M8,` | 8: texture loads: LOAD_TILE vs LOAD_BLOCK, RGBA16/RGBA32/I8, 32 B vs 512 B rows |
 | `M6,` | 6: the VI at 320x240x16/x32 and 640x480x16/x32, seen by the CPU and the RDP |
-| `M6b,` | 6b: the VI's framebuffer inside the CPU's 1 MiB block vs elsewhere (built, awaiting a console run) |
+| `M6b,` | 6b: the VI's framebuffer inside the CPU's 1 MiB block vs elsewhere, plus blank mode |
 | `M4,` | 4: the fill fed through rspq instead of straight from RDRAM |
 
 Every row prints raw tick counts beside derived figures. RDP rows carry
@@ -64,8 +70,10 @@ reports 0 for the RDP counters and its CPU timings are not the console's.
 ## Files
 
 - `src/main.c` — the sweeps; `src/rsp_dmaloop.S` — the RSP DMA client.
-- `results-hw-2026-10-09*.csv` — six console runs (a: sweep 1 via rspq;
+- `results-hw-2026-10-09*.csv` — eight console runs (a: sweep 1 via rspq;
   b: sweeps 1-2; c: sweeps 1-4, colliding placement; d: sweeps 1-5, clean;
   e: all seven, twice, with a wrong "fill alone" reference in sweeps 1-2;
-  f: the reference fixed, cut off during sweep 7).
+  f: the reference fixed, cut off during sweep 7; g: every sweep including
+  8 and 6b, complete, but 6b under a blanked VI by mistake; h: every sweep,
+  6b fixed with VI_CTRL printed).
 - `raw/hw-*.log` — the complete SC64 captures those CSVs came from.
