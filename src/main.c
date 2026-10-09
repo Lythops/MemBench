@@ -218,6 +218,43 @@ static int run_cwb8k(void) {
 static const pattern_t PAT_CDIRTY = { "cdirty8k", prep_dirty8k, run_cdirty8k, 16 };
 static const pattern_t PAT_CWB    = { "cwb8k",    prep_dirty8k, run_cwb8k,    16 };
 
+// Sweep 9d: WHY is an eviction's write-back (cw16: 437 ns) dearer than an
+// explicit one (243)? Two readings: the VR4300 serialises the victim's
+// write-back in front of the refill; or cw16's victim, 8 KiB behind the
+// fill, is another 2 KiB row of the same bank, so every line pays two row
+// switches. Three streaming-write patterns over the 256 KiB buffer, all
+// cw16's shape (one store a line, every line written back inside the window):
+//   cw16_flush8k  explicit write-back after every 8 KiB chunk: the
+//                 optimisation as a program would use it (victims are clean)
+//   cw16_flush2k  the same with 2 KiB batches (one row)
+//   cwb_lag4k     store line i, then explicitly write back line i-256 (4 KiB
+//                 behind: a different row, like an eviction's victim, but the
+//                 line is clean by the time the fill evicts it). Eviction's
+//                 row alternation without eviction: ~cw16 says rows are the
+//                 cost, ~flush8k says eviction itself is.
+static int run_cw16_flush(int chunk_lines) {
+    volatile uint32_t *c = (volatile uint32_t *)buf;
+    for (int base = 0; base < N32; base += chunk_lines * 4) {
+        for (int i = base; i < base + chunk_lines * 4; i += 4) c[i] = i;
+        data_cache_hit_writeback(buf + base * 4, chunk_lines * 16);
+    }
+    return N32 / 4;
+}
+static int run_cw16_flush8k(void) { return run_cw16_flush(512); }
+static int run_cw16_flush2k(void) { return run_cw16_flush(128); }
+static int run_cwb_lag4k(void) {
+    volatile uint32_t *c = (volatile uint32_t *)buf;
+    for (int i = 0; i < N32; i += 4) {
+        c[i] = i;
+        if (i >= 256 * 4) data_cache_hit_writeback(buf + (i - 256 * 4) * 4, 16);
+    }
+    data_cache_hit_writeback(buf + (N32 - 256 * 4) * 4, 256 * 16);   // the last 4 KiB
+    return N32 / 4;
+}
+static const pattern_t PAT_FLUSH8K = { "cw16_flush8k", prep_flush, run_cw16_flush8k, 32 };
+static const pattern_t PAT_FLUSH2K = { "cw16_flush2k", prep_flush, run_cw16_flush2k, 32 };
+static const pattern_t PAT_LAG4K   = { "cwb_lag4k",    prep_flush, run_cwb_lag4k,    32 };
+
 static const pattern_t PATTERNS[] = {
     { "u32r",     prep_none,  run_u32r,     4  },
     { "u64r",     prep_none,  run_u64r,     8  },
@@ -969,6 +1006,20 @@ static void sweep9(void) {
                        ns_per(m.cpu_ticks_min - dirty_min[i / 2], m.cpu_n),
                        ns_per(m.cpu_ticks_sum / RUNS - dirty_mean[i / 2], m.cpu_n));
             }
+        }
+    }
+
+    // 9d: the write-back mechanism (see the patterns' comment). VI on; the
+    // cw16 reference is measured again here so the four share one state.
+    debugf("M9,wbmech,cell,lines,ticks_min,ns_per_line_min,ns_per_line_mean\n");
+    {
+        const pattern_t *pats[] = { &PATTERNS[7], &PAT_FLUSH8K, &PAT_FLUSH2K, &PAT_LAG4K };
+        for (int i = 0; i < 4; i++) {
+            meas_t m;
+            cfg_t c = { .cpu = pats[i] };
+            measure(&m, &c);
+            debugf("M9,wbmech,%s,%d,%lu,%.1f,%.1f\n", pats[i]->name, m.cpu_n, (unsigned long)m.cpu_ticks_min,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n));
         }
     }
 

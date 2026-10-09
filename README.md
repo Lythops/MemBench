@@ -27,8 +27,11 @@ timed on hardware, captured over a SummerCart64, kept as CSV in the repo.
   one that is not (32, 48, 96 B) costs 250-320 ns, so 96 B rows load slower
   per byte than 64 B rows and 32 B rows run at half speed. Loads cost the
   CPU +15% (LOAD_BLOCK) to +36% (64 rows) per access and lose 2% themselves.
-- **A dirty cache line's write-back costs 243 ns by CACHE Hit_Writeback and
-  437 ns by eviction.** Flush produced data explicitly.
+- **Batched cache write-backs beat eviction by 18% on a streaming write**
+  (714 vs 873 ns a line): a batch of a row (2 KiB) or more streams down open
+  RDRAM rows, while an eviction, or an explicit write-back done line by line
+  (worse still, 1044), alternates rows with the fills. Flush produced data
+  with `data_cache_hit_writeback` in batches, never per line.
 - **The RSP DMA engine's per-DMA floor is the issuing ucode's loop** (~450 ns
   with a 15-instruction loop), not the engine; from 512 B it is 2.62 ns a
   byte. **Audio DMA costs under 0.5%.** The VI's framebuffer placement is a
@@ -55,7 +58,7 @@ workspace root.
 | `M6,` | 6: the VI at 320x240x16/x32 and 640x480x16/x32, seen by the CPU and the RDP |
 | `M6b,` | 6b: the VI's framebuffer inside the CPU's 1 MiB block vs elsewhere, plus blank mode |
 | `M6c,` | 6c: the same at 320x240x32 (1280 bytes a line) |
-| `M9,` | 9: the RSP DMA floor against a ucode delay (engine or loop?), a dirty line's write-back alone, the AI streaming audio as a client |
+| `M9,` | 9: the RSP DMA floor against a ucode delay (engine or loop?), a dirty line's write-back alone and its mechanism (batched vs eviction vs line by line), the AI streaming audio as a client |
 | `M4,` | 4: the fill fed through rspq instead of straight from RDRAM |
 
 Every row prints raw tick counts beside derived figures. RDP rows carry
@@ -86,5 +89,5 @@ reports 0 for the RDP counters and its CPU timings are not the console's.
   f: the reference fixed, cut off during sweep 7; g: every sweep including
   8 and 6b, complete, but 6b under a blanked VI by mistake; h: every sweep,
   6b fixed with VI_CTRL printed; i, 2026-10-10: every sweep plus 6c, 9 and
-  the three texture-row knee shapes).
+  the three texture-row knee shapes; j: sweep 9d, the write-back mechanism).
 - `raw/hw-*.log` — the complete SC64 captures those CSVs came from.
