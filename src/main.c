@@ -41,18 +41,25 @@
 
 // What the RDP does in a pass. The first three are sweep 7's; the rest are
 // texture-load variants for sweep 8, each moving 4 KiB per unit.
-enum { K_FILL, K_LOAD, K_RECTZ, K_LOADBLK, K_LOAD32, K_LOADI8, K_LOADNARROW, K_LOADWIDE, N_KIND };
-static const char *KIND_NAME[] = { "fill", "load", "rectz", "loadblk", "load32", "loadi8", "loadnarrow", "loadwide" };
+enum { K_FILL, K_LOAD, K_RECTZ, K_LOADBLK, K_LOAD32, K_LOADI8, K_LOADNARROW, K_LOADWIDE,
+       K_LOAD48, K_LOAD64R, K_LOAD96, N_KIND };
+static const char *KIND_NAME[] = { "fill", "load", "rectz", "loadblk", "load32", "loadi8", "loadnarrow", "loadwide",
+                                   "load48", "load64r", "load96" };
 
-typedef struct { uint64_t fmtsiz; int line_qw; int w, h; bool block; } loadvar_t;
+// bytes: what one unit moves (rows x row bytes); the knee kinds are not exactly 4 KiB.
+typedef struct { uint64_t fmtsiz; int line_qw; int w, h; bool block; int bytes; } loadvar_t;
 #define SIZ(fmt, siz) (((uint64_t)(fmt) << 53) | ((uint64_t)(siz) << 51))
 static const loadvar_t LOADVAR[N_KIND] = {
-    [K_LOAD]       = { SIZ(0, 2), 16, 64,   32, false },    // RGBA16 64x32, 128 B rows: the baseline
-    [K_LOADBLK]    = { SIZ(0, 2), 16, 2048, 1,  true  },    // the same 4 KiB as one LOAD_BLOCK
-    [K_LOAD32]     = { SIZ(0, 3), 16, 32,   32, false },    // RGBA32 32x32
-    [K_LOADI8]     = { SIZ(4, 1), 8,  64,   64, false },    // I8 64x64
-    [K_LOADNARROW] = { SIZ(0, 2), 4,  16,   128, false },   // RGBA16 16x128: 128 rows of 32 B
-    [K_LOADWIDE]   = { SIZ(0, 2), 64, 256,  8,  false },    // RGBA16 256x8: 8 rows of 512 B
+    [K_LOAD]       = { SIZ(0, 2), 16, 64,   32, false, 4096 },    // RGBA16 64x32, 128 B rows: the baseline
+    [K_LOADBLK]    = { SIZ(0, 2), 16, 2048, 1,  true,  4096 },    // the same 4 KiB as one LOAD_BLOCK
+    [K_LOAD32]     = { SIZ(0, 3), 16, 32,   32, false, 4096 },    // RGBA32 32x32
+    [K_LOADI8]     = { SIZ(4, 1), 8,  64,   64, false, 4096 },    // I8 64x64
+    [K_LOADNARROW] = { SIZ(0, 2), 4,  16,   128, false, 4096 },   // RGBA16 16x128: 128 rows of 32 B
+    [K_LOADWIDE]   = { SIZ(0, 2), 64, 256,  8,  false, 4096 },    // RGBA16 256x8: 8 rows of 512 B
+    // sweep 9: the knee between 32 B rows (latency-bound) and 128 B rows (pipelined)
+    [K_LOAD48]     = { SIZ(0, 2), 6,  24,   85, false, 4080 },    // RGBA16 24x85: 85 rows of 48 B
+    [K_LOAD64R]    = { SIZ(0, 2), 8,  32,   64, false, 4096 },    // RGBA16 32x64: 64 rows of 64 B (I8 64x64's rows, 16-bit)
+    [K_LOAD96]     = { SIZ(0, 2), 12, 48,   42, false, 4032 },    // RGBA16 48x42: 42 rows of 96 B
 };
 #define TEX_W 64
 #define TEX_H 32
@@ -84,6 +91,7 @@ typedef struct {
     bool pi;
     uint32_t rdp_off, sp_off;   // placement in the arena; 0 = the defaults
     int  rdp_kind;              // K_FILL (0), K_LOAD, K_RECTZ
+    bool ai;                    // sweep 9: the AI streaming silence through the window
 } cfg_t;
 
 typedef struct {
@@ -96,6 +104,7 @@ typedef struct {
     int      rdp_started, rdp_busy_after, rdp_timeout;
     float    pi_us_sum;                     // the PI pass, issue to completion
     int      pi_busy_after;
+    uint32_t ai_status_before, ai_status_after;   // AI_STATUS raw (bit 30 busy, bit 31 full), last run
 } meas_t;
 
 static uint8_t           *arena;    // 1 MiB aligned; the CPU buffer is its first 256 KiB
@@ -180,6 +189,34 @@ static int run_cw16(void) {
     data_cache_hit_writeback_invalidate(buf, BUF_BYTES);
     return N32 / 4;
 }
+
+// Sweep 9: the write-back alone. 8 KiB (the whole D-cache) is made resident
+// and dirty by the prep; the run then re-dirties it (all hits) and writes it
+// back with CACHE Hit_Writeback, WB_ITERS times. `cdirty8k` does the same
+// without the write-back, so the difference is 512 x WB_ITERS pure write-backs.
+#define WB_BYTES 8192
+#define WB_ITERS 64
+static void prep_dirty8k(void) {
+    data_cache_hit_writeback_invalidate(buf, BUF_BYTES);
+    volatile uint32_t *c = (volatile uint32_t *)buf;
+    for (int i = 0; i < WB_BYTES / 4; i += 4) c[i] = i;     // fills, then dirty and resident
+}
+static int run_cdirty8k(void) {
+    volatile uint32_t *c = (volatile uint32_t *)buf;
+    for (int it = 0; it < WB_ITERS; it++)
+        for (int i = 0; i < WB_BYTES / 4; i += 4) c[i] = i + it;
+    return WB_ITERS * (WB_BYTES / 16);
+}
+static int run_cwb8k(void) {
+    volatile uint32_t *c = (volatile uint32_t *)buf;
+    for (int it = 0; it < WB_ITERS; it++) {
+        for (int i = 0; i < WB_BYTES / 4; i += 4) c[i] = i + it;
+        data_cache_hit_writeback(buf, WB_BYTES);               // 512 dirty lines, kept valid
+    }
+    return WB_ITERS * (WB_BYTES / 16);
+}
+static const pattern_t PAT_CDIRTY = { "cdirty8k", prep_dirty8k, run_cdirty8k, 16 };
+static const pattern_t PAT_CWB    = { "cwb8k",    prep_dirty8k, run_cwb8k,    16 };
 
 static const pattern_t PATTERNS[] = {
     { "u32r",     prep_none,  run_u32r,     4  },
@@ -289,7 +326,7 @@ static float pass_bytes(int kind, int n) {
     switch (kind) {
     case K_FILL:  return (float)n * SCREEN_W * SCREEN_H * 2;
     case K_RECTZ: return (float)n * SCREEN_W * SCREEN_H * 2 * 3 + SCREEN_W * SCREEN_H * 2;  // colour w, Z r, Z w; plus the clear
-    default:      return (float)n * 4096;                                                  // every load variant moves 4 KiB
+    default:      return (float)n * LOADVAR[kind].bytes;                                    // the load variants: ~4 KiB a unit
     }
 }
 
@@ -325,8 +362,8 @@ static float time_fill_alone(void) {
 
 // Size each kind of pass so it lasts about RDP_TARGET_US; the CPU windows are shorter.
 static int rdp_n[N_KIND];
-static const int CAL_N[N_KIND]   = { 8, 256, 8, 256, 256, 256, 256, 256 };
-static const int MAX_N[N_KIND]   = { RDP_MAX_LAYERS, 16000, RDP_MAX_LAYERS, 16000, 16000, 16000, 16000, 16000 };
+static const int CAL_N[N_KIND]   = { 8, 256, 8, 256, 256, 256, 256, 256, 256, 256, 256 };
+static const int MAX_N[N_KIND]   = { RDP_MAX_LAYERS, 16000, RDP_MAX_LAYERS, 16000, 16000, 16000, 16000, 16000, 16000, 16000, 16000 };
 
 static void calibrate_rdp(void) {
     for (int kind = 0; kind < N_KIND; kind++) {
@@ -353,6 +390,8 @@ static void calibrate_rdp(void) {
 
 // ------------------------------------------------------------------ RSP DMA client
 
+static int sp_delay = 0;    // sweep 9: extra loop iterations between DMAs (64 ns each)
+
 static void sp_start(int dir, int len, void *region) {
     rsp_wait();
     rsp_load(&rsp_dmaloop);
@@ -361,6 +400,7 @@ static void sp_start(int dir, int len, void *region) {
     SP_DMEM[2] = len - 1;
     SP_DMEM[3] = dir;
     SP_DMEM[4] = SP_BUF_BYTES - 1;
+    SP_DMEM[5] = sp_delay;
     *SP_STATUS = SP_WSTATUS_CLEAR_SIG0;
     rsp_run_async();
 }
@@ -394,6 +434,12 @@ static void measure(meas_t *m, const cfg_t *c) {
         uint32_t pi_t0 = 0;
         if (c->sp_len) { sp_start(c->sp_dir, c->sp_len, sp_region); wait_ticks(TICKS_FROM_US(500)); }
         if (c->pi)     { pi_t0 = TICKS_READ(); pi_start(); }
+        if (c->ai) {
+            // Every buffer full before the window: the AI's two DMA slots
+            // then outlast it (interrupts are off inside, so nothing refills).
+            while (audio_can_write()) audio_write_silence();
+            m->ai_status_before = *(volatile uint32_t *)0xA450000C;
+        }
         if (c->rdp) {
             reset_counters();
             rdp_start();
@@ -411,6 +457,7 @@ static void measure(meas_t *m, const cfg_t *c) {
         uint32_t sp1 = c->sp_len ? sp_count() : 0;
         bool rdp_busy_after = rdp_pipe_busy();
         bool pi_busy_after  = pi_busy();
+        if (c->ai) m->ai_status_after = *(volatile uint32_t *)0xA450000C;
         enable_interrupts();
         if (c->sp_len) sp_stop();
         if (c->pi) {
@@ -708,8 +755,8 @@ static void sweep7(void) {
 
 static void sweep8(void) {
     debugf("M8,kind,cell,units,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,tmem_us_mean,us_per_4k,MBps_alone,tmem_frac,rdp_started,rdp_busy_after\n");
-    static const int KINDS[] = { K_LOAD, K_LOADBLK, K_LOAD32, K_LOADI8, K_LOADNARROW, K_LOADWIDE };
-    for (int i = 0; i < 6; i++) {
+    static const int KINDS[] = { K_LOAD, K_LOADBLK, K_LOAD32, K_LOADI8, K_LOADNARROW, K_LOADWIDE, K_LOAD48, K_LOAD64R, K_LOAD96 };
+    for (int i = 0; i < 9; i++) {
         int kind = KINDS[i];
         meas_t alone, cpu;
         cfg_t c_alone = { .cpu = NULL,         .rdp = true, .rdp_kind = kind };
@@ -826,6 +873,132 @@ static void sweep6(void) {
     debugf("M6,# done\n");
 }
 
+// ------------------------------------------------------------------ sweep 6c: a 32-bit buffer in the CPU's block
+//
+// Sweep 6b found the VI's placement a 2.6% effect at 640 bytes a line. Does
+// it scale with bytes a line? The same test at 320x240x32 (1280 B a line,
+// the same bytes a line as 640x480x16), driven directly like 6b.
+
+static void sweep6c(void) {
+    volatile uint32_t *VI_CTRL_REG   = (volatile uint32_t *)0xA4400000;
+    volatile uint32_t *VI_ORIGIN_REG = (volatile uint32_t *)0xA4400004;
+    display_close();
+    void *fbs[2] = { arena, arena + CPU_OFF + 512 * 1024 };
+    for (int i = 0; i < 2; i++) memset(UncachedAddr(fbs[i]), 0, SCREEN_W * SCREEN_H * 4);
+    debugf("M6c,fb_phys,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after,vi_ctrl_after\n");
+    const pattern_t *pats[] = { &PATTERNS[0], &PATTERNS[1], &PATTERNS[2], PAT_CR16 };
+    for (int which = 0; which < 2; which++) {
+        void *shown = fbs[which];
+        uint32_t origin = PhysicalAddr(shown);
+        vi_set_origin(shown, SCREEN_W, 32);
+        vi_set_xscale(SCREEN_W);
+        vi_set_yscale(SCREEN_H);
+        vi_blank(false);
+        wait_ms(100);
+        for (int p = 0; p < 4; p++) {
+            meas_t m;
+            cfg_t c = { .cpu = pats[p] };
+            measure(&m, &c);
+            debugf("M6c,%08lx,%s,%.1f,%.1f,0,%08lx,%08lx\n", (unsigned long)origin, pats[p]->name,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n),
+                   (unsigned long)*VI_ORIGIN_REG, (unsigned long)*VI_CTRL_REG);
+        }
+        meas_t m;
+        cfg_t c = { .cpu = NULL, .rdp = true };
+        measure(&m, &c);
+        debugf("M6c,%08lx,rdp_fill,0,0,%.1f,%08lx,%08lx\n", (unsigned long)origin, m.rdp_us_sum / RUNS,
+               (unsigned long)*VI_ORIGIN_REG, (unsigned long)*VI_CTRL_REG);
+    }
+    display_init(RESOLUTION_320x240, DEPTH_16_BPP, 2, GAMMA_NONE, FILTERS_RESAMPLE);
+    clear_screen();
+    debugf("M6c,# done\n");
+}
+
+// ------------------------------------------------------------------ sweep 9: the loose ends
+//
+// 9a. The RSP DMA floor: ~440 ns per 64 B DMA in sweep 2. Engine or loop?
+//     The ucode takes a delay parameter (64 ns an iteration); if the cost
+//     per DMA rises by 64 ns per iteration from zero, the loop was the
+//     floor; if it stays flat until the delay exceeds it, the engine is.
+// 9b. Cached write-back alone: 8 KiB resident and dirty, re-dirtied and
+//     written back WB_ITERS times, against the same without the write-back.
+// 9c. The AI as a client: 44.1 kHz stereo silence streaming (176 KB/s)
+//     under the CPU's patterns and the RDP fill.
+
+static void sweep9(void) {
+    // 9a
+    debugf("M9,spfloor,len,delay_iters,dmas,win_us,ns_per_dma,MBps\n");
+    static const int LENS[]   = { 64, 128, 512 };
+    static const int DELAYS[] = { 0, 1, 2, 4, 8, 16, 32 };
+    for (int l = 0; l < 3; l++) {
+        for (int d = 0; d < 7; d++) {
+            if (LENS[l] == 512 && (DELAYS[d] == 1 || DELAYS[d] == 2 || DELAYS[d] == 8)) continue;
+            sp_delay = DELAYS[d];
+            meas_t m;
+            cfg_t c = { .cpu = NULL, .sp_dir = 0, .sp_len = LENS[l] };
+            measure(&m, &c);
+            float dmas = (float)m.sp_dmas_sum / RUNS, win = m.win_us_sum / RUNS;
+            debugf("M9,spfloor,%d,%d,%.0f,%.1f,%.1f,%.2f\n", LENS[l], DELAYS[d], dmas, win,
+                   dmas > 0 ? win * 1000 / dmas : 0, win > 0 ? dmas * LENS[l] / win : 0);
+        }
+    }
+    sp_delay = 0;
+
+    // 9b
+    debugf("M9,wb,cell,lines,ticks_min,ns_per_line_min,ns_per_line_mean,rdp_alone_us,rdp_us_mean,rdp_started,rdp_busy_after\n");
+    {
+        struct { const char *name; cfg_t cfg; } cells[] = {
+            { "cdirty8k",     { .cpu = &PAT_CDIRTY } },
+            { "cwb8k",        { .cpu = &PAT_CWB } },
+            { "cdirty8k+rdp", { .cpu = &PAT_CDIRTY, .rdp = true } },
+            { "cwb8k+rdp",    { .cpu = &PAT_CWB,    .rdp = true } },
+        };
+        uint32_t dirty_min[2] = { 0, 0 }, dirty_mean[2] = { 0, 0 };
+        for (int i = 0; i < 4; i++) {
+            meas_t m;
+            measure(&m, &cells[i].cfg);
+            if (i % 2 == 0) { dirty_min[i / 2] = m.cpu_ticks_min; dirty_mean[i / 2] = m.cpu_ticks_sum / RUNS; }
+            debugf("M9,wb,%s,%d,%lu,%.1f,%.1f,%.1f,%.1f,%d,%d\n", cells[i].name, m.cpu_n, (unsigned long)m.cpu_ticks_min,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n),
+                   cells[i].cfg.rdp ? rdp_alone_us[L_IDLE] : 0.0f, cells[i].cfg.rdp ? m.rdp_us_sum / RUNS : 0.0f,
+                   m.rdp_started, m.rdp_busy_after);
+            if (i % 2 == 1) {
+                // the write-back alone: the pair's difference per line
+                debugf("M9,wb,%s,%d,%lu,%.1f,%.1f,0,0,0,0\n", i == 1 ? "writeback_alone" : "writeback_alone+rdp", m.cpu_n,
+                       (unsigned long)(m.cpu_ticks_min - dirty_min[i / 2]),
+                       ns_per(m.cpu_ticks_min - dirty_min[i / 2], m.cpu_n),
+                       ns_per(m.cpu_ticks_sum / RUNS - dirty_mean[i / 2], m.cpu_n));
+            }
+        }
+    }
+
+    // 9c
+    audio_init(44100, AUDIO_INIT_LATENCY_MS(200));
+    debugf("M9,ai,cell,accesses,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,ai_status_before,ai_status_after,rdp_started,rdp_busy_after\n");
+    {
+        struct { const char *name; cfg_t cfg; } cells[] = {
+            { "u32r",      { .cpu = &PATTERNS[0] } },
+            { "u32r+ai",   { .cpu = &PATTERNS[0], .ai = true } },
+            { "cr16",      { .cpu = PAT_CR16 } },
+            { "cr16+ai",   { .cpu = PAT_CR16, .ai = true } },
+            { "u32w",      { .cpu = &PATTERNS[2] } },
+            { "u32w+ai",   { .cpu = &PATTERNS[2], .ai = true } },
+            { "rdp",       { .cpu = NULL, .rdp = true } },
+            { "rdp+ai",    { .cpu = NULL, .rdp = true, .ai = true } },
+        };
+        for (int i = 0; i < 8; i++) {
+            meas_t m;
+            measure(&m, &cells[i].cfg);
+            debugf("M9,ai,%s,%d,%.1f,%.1f,%.1f,%.1f,%08lx,%08lx,%d,%d\n", cells[i].name, m.cpu_n,
+                   ns_per(m.cpu_ticks_min, m.cpu_n), ns_per(m.cpu_ticks_sum / RUNS, m.cpu_n),
+                   cells[i].cfg.rdp ? rdp_alone_us[L_IDLE] : 0.0f, cells[i].cfg.rdp ? m.rdp_us_sum / RUNS : 0.0f,
+                   (unsigned long)m.ai_status_before, (unsigned long)m.ai_status_after, m.rdp_started, m.rdp_busy_after);
+        }
+    }
+    audio_close();
+    debugf("M9,# done\n");
+}
+
 // ------------------------------------------------------------------ results screen
 
 static int font_id = 1;
@@ -914,6 +1087,8 @@ int main(void) {
     sweep8();
     sweep6();
     sweep6b();
+    sweep6c();
+    sweep9();
 
     // Only now the RSP goes to rspq, for sweep 4 and the text. A SYNC_FULL
     // interrupt may be pending from the raw passes; clear it so rdpq does not

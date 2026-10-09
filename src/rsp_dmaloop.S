@@ -8,6 +8,9 @@
 //   0x08  DMA size register value (bytes - 1), 8-byte granular
 //   0x0C  direction: 0 = RDRAM -> DMEM (read), else DMEM -> RDRAM (write)
 //   0x10  region mask (bytes - 1, power of two): the RDRAM offset wraps on it
+//   0x14  delay: extra loop iterations between DMAs, 4 instructions (64 ns)
+//         each; 0 is the tight loop. Sweep 9 uses it to tell whether the
+//         floor per small DMA is the engine's or this loop's.
 // DMEM 0x100.. is the transfer target, so a DMA may be up to 3840 bytes.
 
 #include <rsp.inc>
@@ -23,6 +26,7 @@ PARAMS:
     .long 0     # size - 1
     .long 0     # direction
     .long 0     # region mask
+    .long 0     # delay iterations
 
     .text
     .globl _start
@@ -31,6 +35,7 @@ _start:
     lw t1, 0x08(zero)           # size register value
     lw t2, 0x0C(zero)           # direction
     lw t3, 0x10(zero)           # mask
+    lw t9, 0x14(zero)           # delay iterations
     addiu t4, t1, 1             # bytes per DMA
     move t5, zero               # offset
     move t6, zero               # counter
@@ -60,7 +65,11 @@ issued:
     and t5, t5, t3
     addiu t6, t6, 1
     sw t6, 0x00(zero)
-    j loop
+    move t8, t9                 # the delay: 4 instructions an iteration
+delay:
+    beq t8, zero, loop
+    addiu t8, t8, -1
+    j delay
     nop
 
 done:

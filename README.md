@@ -8,7 +8,7 @@ measures them on a console and prints every cell as a CSV line.
 Sibling of `FillBench/` (the RDP side). Same pattern: an LLM-written sweep,
 timed on hardware, captured over a SummerCart64, kept as CSV in the repo.
 
-## Findings (PAL console, Expansion Pak, 2026-10-09, eight runs)
+## Findings (PAL console, Expansion Pak, 2026-10-09/10, nine runs)
 
 - **RDRAM conflicts live in 1 MiB-aligned blocks.** Another client whose
   memory shares the CPU's 1 MiB block costs the CPU +40 to +50% per access
@@ -22,9 +22,17 @@ timed on hardware, captured over a SummerCart64, kept as CSV in the repo.
   textured pixel 59 ns.**
 - **Texture loads move ~2.2 bytes an RDP clock whatever the format**
   (RGBA16, RGBA32 and I8 alike): 4 KiB in 29-32 us. LOAD_BLOCK is 8% faster
-  than LOAD_TILE only because it has one row; each row costs 85 ns, and 32 B
-  rows are latency-bound at half speed. Loads cost the CPU +15% (LOAD_BLOCK)
-  to +36% (64 rows) per access and lose 2% themselves.
+  than LOAD_TILE only because it has one row. Rows are fetched in 64 B
+  units: a row that is a multiple of 64 B costs 85 ns on top of its bytes,
+  one that is not (32, 48, 96 B) costs 250-320 ns, so 96 B rows load slower
+  per byte than 64 B rows and 32 B rows run at half speed. Loads cost the
+  CPU +15% (LOAD_BLOCK) to +36% (64 rows) per access and lose 2% themselves.
+- **A dirty cache line's write-back costs 243 ns by CACHE Hit_Writeback and
+  437 ns by eviction.** Flush produced data explicitly.
+- **The RSP DMA engine's per-DMA floor is the issuing ucode's loop** (~450 ns
+  with a 15-instruction loop), not the engine; from 512 B it is 2.62 ns a
+  byte. **Audio DMA costs under 0.5%.** The VI's framebuffer placement is a
+  3% effect at most.
 - **The VI costs bytes per scanline:** 320x240x16 takes 5% of the CPU and 7%
   of the RDP; 320x240x32 and 640x480x16 take 11% / 16%; 640x480x32 takes
   30% / 42%. The framebuffer inside the CPU's 1 MiB block adds only 2.6%
@@ -46,6 +54,8 @@ workspace root.
 | `M8,` | 8: texture loads: LOAD_TILE vs LOAD_BLOCK, RGBA16/RGBA32/I8, 32 B vs 512 B rows |
 | `M6,` | 6: the VI at 320x240x16/x32 and 640x480x16/x32, seen by the CPU and the RDP |
 | `M6b,` | 6b: the VI's framebuffer inside the CPU's 1 MiB block vs elsewhere, plus blank mode |
+| `M6c,` | 6c: the same at 320x240x32 (1280 bytes a line) |
+| `M9,` | 9: the RSP DMA floor against a ucode delay (engine or loop?), a dirty line's write-back alone, the AI streaming audio as a client |
 | `M4,` | 4: the fill fed through rspq instead of straight from RDRAM |
 
 Every row prints raw tick counts beside derived figures. RDP rows carry
@@ -56,7 +66,7 @@ the window outlasted the pass.
 
     /c/msys64/usr/bin/bash -lc "/c/Nintendo64/MemBench/build.sh"
     /c/Nintendo64/tools/flash.sh -d --secs 200 membench.z64 > raw/hw-<date>.log
-    grep -E '^M[B2-8]b?,' raw/hw-<date>.log > results-hw-<date>.csv
+    grep -E '^M[B2-9][bc]?,' raw/hw-<date>.log > results-hw-<date>.csv
 
 Press Reset promptly after the upload: an SC64 upload does not restart the
 console, and the run takes about 80 s. The TV is black while the sweeps run
@@ -75,5 +85,6 @@ reports 0 for the RDP counters and its CPU timings are not the console's.
   e: all seven, twice, with a wrong "fill alone" reference in sweeps 1-2;
   f: the reference fixed, cut off during sweep 7; g: every sweep including
   8 and 6b, complete, but 6b under a blanked VI by mistake; h: every sweep,
-  6b fixed with VI_CTRL printed).
+  6b fixed with VI_CTRL printed; i, 2026-10-10: every sweep plus 6c, 9 and
+  the three texture-row knee shapes).
 - `raw/hw-*.log` — the complete SC64 captures those CSVs came from.

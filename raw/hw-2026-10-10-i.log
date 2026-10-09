@@ -1,0 +1,2359 @@
+flash: uploading membench.z64 (208K) ...
+Uploading ROM [membench.z64]... done
+Save type set to [None]
+Boot mode set to [Bootloader -> ROM]
+flash: attached for 200s -- debugf() output follows.
+[Debug]: Started
+WARNING: Allocations beyond 4 MiB: this ROM requires the expansion pak to work properly.
+WARNING: Call assert_memory_expanded() or is_memory_expanded() in main to disable this warning.
+MB,# MemBench: tv=PAL mem=8 MiB ticks/s=46875000 buf=256 KiB runs=5 arena=00100000 cpu_buf=00200000 rdp_target=00300000 sp_region=00400000
+MB,# fill pass: 8 units 5704.5 us -> 112 units (713.06 us per unit, 215 MB/s)
+MB,# load pass: 256 units 7860.3 us -> 2605 units (30.70 us per unit, 133 MB/s)
+MB,# rectz pass: 8 units 36390.8 us -> 17 units (4548.85 us per unit, 106 MB/s)
+MB,# loadblk pass: 256 units 7243.2 us -> 2827 units (28.29 us per unit, 145 MB/s)
+MB,# load32 pass: 256 units 7861.7 us -> 2605 units (30.71 us per unit, 133 MB/s)
+MB,# loadi8 pass: 256 units 8826.6 us -> 2320 units (34.48 us per unit, 119 MB/s)
+MB,# loadnarrow pass: 256 units 14986.7 us -> 1366 units (58.54 us per unit, 70 MB/s)
+MB,# loadwide pass: 256 units 7379.7 us -> 2775 units (28.83 us per unit, 142 MB/s)
+MB,# load48 pass: 256 units 13965.9 us -> 1466 units (54.55 us per unit, 75 MB/s)
+MB,# load64r pass: 256 units 8825.1 us -> 2320 units (34.47 us per unit, 119 MB/s)
+MB,# load96 pass: 256 units 9663.4 us -> 2119 units (37.75 us per unit, 107 MB/s)
+MB,# rectz check: pixel (100,100) reads 1235, texel 1234 -> written
+MB,pattern,load,accesses,bytes_per,ticks_min,ticks_mean,ns_min,ns_mean,MBps_min,rdp_alone_us,rdp_us,rdp_started,rdp_busy_after
+MB,u32r,vioff,65536,4,1119265,1119300,364.3,364.4,11.0,0.0,0.0,0,0
+MB,u64r,vioff,32768,8,590948,590972,384.7,384.7,20.8,0.0,0.0,0,0
+MB,u32w,vioff,65536,4,548517,548558,178.6,178.6,22.4,0.0,0.0,0,0
+MB,u64w,vioff,32768,8,299320,299362,194.9,194.9,41.1,0.0,0.0,0,0
+MB,u32r_s64,vioff,65536,4,1200869,1200897,390.9,390.9,10.2,0.0,0.0,0,0
+MB,u32r_s4k,vioff,65536,4,1445647,1445663,470.6,470.6,8.5,0.0,0.0,0,0
+MB,cr16,vioff,16384,16,311181,311506,405.2,405.6,39.5,0.0,0.0,0,0
+MB,cw16,vioff,16384,32,646747,646905,842.1,842.3,38.0,0.0,0.0,0,0
+MB,# fill pass alone (112 layers): VI off 79459.8 us, VI on 84839.2 us
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 450
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 232
+VI WARNING: __vblank_interrupt outside of vblank period: 436
+MB,u32r,idle,65536,4,1176672,1178425,383.0,383.6,10.4,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 144
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 218
+MB,u64r,idle,32768,8,616700,617672,401.5,402.1,19.9,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 76
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 90
+MB,u32w,idle,65536,4,586583,589232,190.9,191.8,20.9,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 162
+MB,u64w,idle,32768,8,316307,319858,205.9,208.2,38.8,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 574
+VI WARNING: __vblank_interrupt outside of vblank period: 200
+VI WARNING: __vblank_interrupt outside of vblank period: 452
+MB,u32r_s64,idle,65536,4,1249515,1251678,406.7,407.4,9.8,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 300
+VI WARNING: __vblank_interrupt outside of vblank period: 100
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 328
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+MB,u32r_s4k,idle,65536,4,1510318,1511255,491.6,491.9,8.1,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+MB,cr16,idle,16384,16,324585,327689,422.6,426.7,37.9,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 292
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+MB,cw16,idle,16384,32,670818,672231,873.5,875.3,36.6,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 204
+VI WARNING: __vblank_interrupt outside of vblank period: 580
+VI WARNING: __vblank_interrupt outside of vblank period: 328
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+MB,u32r,rdpfill,65536,4,1265941,1268642,412.1,413.0,9.7,84839.2,92081.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 100
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+MB,u64r,rdpfill,32768,8,637952,639492,415.3,416.3,19.3,84839.2,88532.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 206
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 180
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+MB,u32w,rdpfill,65536,4,1011163,1011466,329.2,329.3,12.2,84839.2,86467.7,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 292
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 192
+MB,u64w,rdpfill,32768,8,503015,505409,327.5,329.0,24.4,84839.2,85670.4,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 480
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+MB,u32r_s64,rdpfill,65536,4,1269577,1272377,413.3,414.2,9.7,84839.2,92119.6,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 82
+VI WARNING: __vblank_interrupt outside of vblank period: 558
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+MB,u32r_s4k,rdpfill,65536,4,1531446,1534365,498.5,499.5,8.0,84839.2,97698.3,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 144
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+MB,cr16,rdpfill,16384,16,329638,332844,429.2,433.4,37.3,84839.2,86931.1,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 398
+VI WARNING: __vblank_interrupt outside of vblank period: 144
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+MB,cw16,rdpfill,16384,32,791585,792590,1030.7,1032.0,31.0,84839.2,90572.5,5,5
+MB,# done
+M2,cell,cpu,rdp,sp,pi,runs,win_us,cpu_n,cpu_ticks_min,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_min,rdp_us_mean,rdp_started,rdp_busy_after,rdp_timeout,pi_us_mean,pi_MBps,pi_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 172
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 602
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+M2,sp_rd64,-,0,rd64,0,5,25000.1,0,1171880,0.0,0.0,52380,134.09,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 288
+VI WARNING: __vblank_interrupt outside of vblank period: 506
+VI WARNING: __vblank_interrupt outside of vblank period: 98
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+VI WARNING: __vblank_interrupt outside of vblank period: 536
+M2,sp_rd512,-,0,rd512,0,5,25000.1,0,1171879,0.0,0.0,18598,380.89,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 180
+VI WARNING: __vblank_interrupt outside of vblank period: 396
+VI WARNING: __vblank_interrupt outside of vblank period: 614
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 470
+M2,sp_rd2k,-,0,rd2048,0,5,25000.2,0,1171879,0.0,0.0,4647,380.71,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 326
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+M2,sp_wr64,-,0,wr64,0,5,25000.1,0,1171879,0.0,0.0,53363,136.61,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 620
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 474
+VI WARNING: __vblank_interrupt outside of vblank period: 68
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+M2,sp_wr512,-,0,wr512,0,5,25000.1,0,1171879,0.0,0.0,19367,396.63,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 554
+VI WARNING: __vblank_interrupt outside of vblank period: 148
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 178
+M2,sp_wr2k,-,0,wr2048,0,5,25000.1,0,1171879,0.0,0.0,4845,396.92,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 240
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 296
+M2,sp_rd2k+cpu,u64r,0,rd2048,0,5,18460.4,32768,864755,563.0,563.4,2168,240.52,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 464
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+VI WARNING: __vblank_interrupt outside of vblank period: 578
+M2,sp_wr2k+cpu,u64r,0,wr2048,0,5,19834.2,32768,928944,604.8,605.3,2148,221.88,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 340
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+M2,sp_rd64+cpu,u64r,0,rd64,0,5,15299.4,32768,715627,465.9,466.9,32817,137.28,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+M2,sp_rd2k+cr16,cr16,0,rd2048,0,5,13834.0,16384,645323,840.3,844.4,1932,286.13,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 604
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 134
+VI WARNING: __vblank_interrupt outside of vblank period: 502
+VI WARNING: __vblank_interrupt outside of vblank period: 240
+M2,sp_rd2k+rdp,-,1,rd2048,0,5,25000.3,0,1171880,0.0,0.0,4649,380.91,84839.2,111288.2,111697.8,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 146
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+M2,sp_wr2k+rdp,-,1,wr2048,0,5,25000.1,0,1171879,0.0,0.0,4846,397.02,84839.2,111341.2,111412.9,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+VI WARNING: __vblank_interrupt outside of vblank period: 550
+VI WARNING: __vblank_interrupt outside of vblank period: 420
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+M2,sp_rd64+rdp,-,1,rd64,0,5,25000.2,0,1171879,0.0,0.0,54270,138.93,84839.2,95466.7,95526.7,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+VI WARNING: __vblank_interrupt outside of vblank period: 46
+VI WARNING: __vblank_interrupt outside of vblank period: 208
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+VI WARNING: __vblank_interrupt outside of vblank period: 538
+M2,sp_rd2k+cpu+rdp,u64r,1,rd2048,0,5,18460.0,32768,864636,562.9,563.4,2167,240.50,84839.2,104732.8,104825.5,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 172
+VI WARNING: __vblank_interrupt outside of vblank period: 378
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+M2,sp_wr2k+cpu+rdp,u64r,1,wr2048,0,5,19821.4,32768,928454,604.5,604.9,2146,221.81,84839.2,106124.9,106219.3,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 146
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 44
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 296
+VI WARNING: __vblank_interrupt outside of vblank period: 150
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 258
+M2,pi,-,0,-,1,5,25000.2,0,1171880,0.0,0.0,0,0.00,0.0,0.0,0.0,0,0,0,202318.7,5.18,5
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 418
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 360
+VI WARNING: __vblank_interrupt outside of vblank period: 580
+M2,pi+cpu,u64r,0,-,1,5,13259.7,32768,621385,404.5,404.7,0,0.00,0.0,0.0,0.0,0,0,0,202059.5,5.19,5
+VI WARNING: __vblank_interrupt outside of vblank period: 212
+VI WARNING: __vblank_interrupt outside of vblank period: 70
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+VI WARNING: __vblank_interrupt outside of vblank period: 134
+VI WARNING: __vblank_interrupt outside of vblank period: 334
+VI WARNING: __vblank_interrupt outside of vblank period: 194
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+M2,pi+rdp,-,1,-,1,5,25000.2,0,1171879,0.0,0.0,0,0.00,84839.2,85148.1,85155.7,5,5,0,202278.6,5.18,5
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+VI WARNING: __vblank_interrupt outside of vblank period: 516
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 260
+VI WARNING: __vblank_interrupt outside of vblank period: 190
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+VI WARNING: __vblank_interrupt outside of vblank period: 338
+VI WARNING: __vblank_interrupt outside of vblank period: 558
+VI WARNING: __vblank_interrupt outside of vblank period: 490
+M2,pi+sp_rd2k,-,0,rd2048,1,5,25000.3,0,1171879,0.0,0.0,4552,372.95,0.0,0.0,0.0,0,0,0,204587.0,5.13,5
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 296
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 622
+VI WARNING: __vblank_interrupt outside of vblank period: 566
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+M2,pi+sp_wr2k,-,0,wr2048,1,5,25000.3,0,1171879,0.0,0.0,4739,388.28,0.0,0.0,0.0,0,0,0,205025.9,5.11,5
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 234
+VI WARNING: __vblank_interrupt outside of vblank period: 64
+M2,cpu,u64r,0,-,0,5,13195.1,32768,616935,401.7,402.7,0,0.00,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 278
+VI WARNING: __vblank_interrupt outside of vblank period: 182
+M2,cpu+rdp,u64r,1,-,0,5,13646.2,32768,638110,415.4,416.4,0,0.00,84839.2,88547.8,88599.2,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 376
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 186
+M2,rdp,-,1,-,0,5,25000.1,0,1171880,0.0,0.0,0,0.00,84839.2,84729.1,84790.1,5,5,0,0.0,0.00,0
+M2,# done
+M3,off_kb,phys,client,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,rdp_started,rdp_busy_after,sp_dmas,sp_MBps
+VI WARNING: __vblank_interrupt outside of vblank period: 464
+VI WARNING: __vblank_interrupt outside of vblank period: 610
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 274
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+VI WARNING: __vblank_interrupt outside of vblank period: 382
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 508
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 298
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+VI WARNING: __vblank_interrupt outside of vblank period: 192
+M3,0,00100000,rdp,27073.6,412.2,413.1,84796.2,92131.7,5,5,0,0
+M3,0,00100000,sp_rd2k,36909.4,562.9,563.2,0,0,0,0,4336,240.59
+VI WARNING: __vblank_interrupt outside of vblank period: 494
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 304
+VI WARNING: __vblank_interrupt outside of vblank period: 450
+VI WARNING: __vblank_interrupt outside of vblank period: 34
+VI WARNING: __vblank_interrupt outside of vblank period: 410
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 536
+VI WARNING: __vblank_interrupt outside of vblank period: 284
+VI WARNING: __vblank_interrupt outside of vblank period: 360
+VI WARNING: __vblank_interrupt outside of vblank period: 326
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+M3,256,00140000,rdp,27067.9,412.3,413.0,84780.3,92135.2,5,5,0,0
+M3,256,00140000,sp_rd2k,36909.9,562.9,563.2,0,0,0,0,4336,240.60
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 186
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 478
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+VI WARNING: __vblank_interrupt outside of vblank period: 438
+VI WARNING: __vblank_interrupt outside of vblank period: 188
+VI WARNING: __vblank_interrupt outside of vblank period: 562
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+VI WARNING: __vblank_interrupt outside of vblank period: 352
+VI WARNING: __vblank_interrupt outside of vblank period: 316
+VI WARNING: __vblank_interrupt outside of vblank period: 280
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+M3,512,00180000,rdp,27063.2,412.2,413.0,84778.8,92134.7,5,5,0,0
+M3,512,00180000,sp_rd2k,36904.4,562.8,563.1,0,0,0,0,4335,240.57
+VI WARNING: __vblank_interrupt outside of vblank period: 548
+VI WARNING: __vblank_interrupt outside of vblank period: 68
+VI WARNING: __vblank_interrupt outside of vblank period: 212
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 504
+VI WARNING: __vblank_interrupt outside of vblank period: 88
+VI WARNING: __vblank_interrupt outside of vblank period: 464
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+VI WARNING: __vblank_interrupt outside of vblank period: 590
+VI WARNING: __vblank_interrupt outside of vblank period: 338
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 378
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+M3,768,001c0000,rdp,27061.9,412.2,412.9,84783.2,92137.2,5,5,0,0
+M3,768,001c0000,sp_rd2k,36903.7,563.0,563.1,0,0,0,0,4334,240.56
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 578
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+VI WARNING: __vblank_interrupt outside of vblank period: 278
+VI WARNING: __vblank_interrupt outside of vblank period: 592
+VI WARNING: __vblank_interrupt outside of vblank period: 152
+VI WARNING: __vblank_interrupt outside of vblank period: 338
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+VI WARNING: __vblank_interrupt outside of vblank period: 80
+M3,1280,00240000,rdp,37987.4,579.5,579.6,84778.5,103636.6,5,5,0,0
+M3,1280,00240000,sp_rd2k,43957.5,670.6,670.7,0,0,0,0,3771,175.70
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 46
+VI WARNING: __vblank_interrupt outside of vblank period: 190
+VI WARNING: __vblank_interrupt outside of vblank period: 336
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+VI WARNING: __vblank_interrupt outside of vblank period: 372
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+VI WARNING: __vblank_interrupt outside of vblank period: 590
+VI WARNING: __vblank_interrupt outside of vblank period: 74
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 572
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+M3,1536,00280000,rdp,37985.6,579.4,579.6,84790.7,103646.4,5,5,0,0
+M3,1536,00280000,sp_rd2k,43954.1,670.4,670.7,0,0,0,0,3769,175.62
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 274
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 494
+VI WARNING: __vblank_interrupt outside of vblank period: 178
+VI WARNING: __vblank_interrupt outside of vblank period: 364
+VI WARNING: __vblank_interrupt outside of vblank period: 548
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+M3,1792,002c0000,rdp,37984.1,579.5,579.6,84780.7,103656.6,5,5,0,0
+M3,1792,002c0000,sp_rd2k,43965.8,670.8,670.9,0,0,0,0,3771,175.67
+VI WARNING: __vblank_interrupt outside of vblank period: 588
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 398
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 508
+VI WARNING: __vblank_interrupt outside of vblank period: 258
+VI WARNING: __vblank_interrupt outside of vblank period: 382
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+VI WARNING: __vblank_interrupt outside of vblank period: 352
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+M3,2048,00300000,rdp,27071.6,412.2,413.1,84790.8,92155.4,5,5,0,0
+M3,2048,00300000,sp_rd2k,36906.5,562.8,563.1,0,0,0,0,4335,240.58
+VI WARNING: __vblank_interrupt outside of vblank period: 620
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 430
+VI WARNING: __vblank_interrupt outside of vblank period: 576
+VI WARNING: __vblank_interrupt outside of vblank period: 162
+VI WARNING: __vblank_interrupt outside of vblank period: 538
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 488
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+VI WARNING: __vblank_interrupt outside of vblank period: 418
+VI WARNING: __vblank_interrupt outside of vblank period: 382
+VI WARNING: __vblank_interrupt outside of vblank period: 348
+M3,2560,00380000,rdp,27068.1,412.2,413.0,84796.2,92148.3,5,5,0,0
+M3,2560,00380000,sp_rd2k,36903.0,562.3,563.1,0,0,0,0,4335,240.58
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 192
+VI WARNING: __vblank_interrupt outside of vblank period: 568
+VI WARNING: __vblank_interrupt outside of vblank period: 316
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 442
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+VI WARNING: __vblank_interrupt outside of vblank period: 446
+VI WARNING: __vblank_interrupt outside of vblank period: 410
+VI WARNING: __vblank_interrupt outside of vblank period: 376
+M3,3072,00400000,rdp,27065.9,412.3,413.0,84794.8,92141.8,5,5,0,0
+M3,3072,00400000,sp_rd2k,36919.3,562.8,563.3,0,0,0,0,4337,240.63
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+VI WARNING: __vblank_interrupt outside of vblank period: 194
+VI WARNING: __vblank_interrupt outside of vblank period: 340
+VI WARNING: __vblank_interrupt outside of vblank period: 488
+VI WARNING: __vblank_interrupt outside of vblank period: 216
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 510
+VI WARNING: __vblank_interrupt outside of vblank period: 474
+VI WARNING: __vblank_interrupt outside of vblank period: 440
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+M3,3584,00480000,rdp,27068.5,412.2,413.0,84780.1,92139.0,5,5,0,0
+M3,3584,00480000,sp_rd2k,36912.9,562.9,563.2,0,0,0,0,4334,240.50
+VI WARNING: __vblank_interrupt outside of vblank period: 80
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 516
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+VI WARNING: __vblank_interrupt outside of vblank period: 574
+VI WARNING: __vblank_interrupt outside of vblank period: 536
+VI WARNING: __vblank_interrupt outside of vblank period: 500
+VI WARNING: __vblank_interrupt outside of vblank period: 466
+VI WARNING: __vblank_interrupt outside of vblank period: 428
+M3,3840,004c0000,rdp,27075.2,412.4,413.1,84775.1,92141.7,5,5,0,0
+M3,3840,004c0000,sp_rd2k,36917.8,562.8,563.3,0,0,0,0,4332,240.32
+M3,# done
+M5,stride_B,accesses,ticks_min,ns_min,ns_mean
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+VI WARNING: __vblank_interrupt outside of vblank period: 564
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+M5,4,65536,1304009,424.5,425.3
+VI WARNING: __vblank_interrupt outside of vblank period: 512
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 464
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+M5,8,65536,1303684,424.4,425.4
+VI WARNING: __vblank_interrupt outside of vblank period: 118
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+VI WARNING: __vblank_interrupt outside of vblank period: 70
+VI WARNING: __vblank_interrupt outside of vblank period: 360
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+M5,16,65536,1304784,424.7,425.7
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+M5,32,65536,1308337,425.9,426.7
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 334
+M5,64,65536,1311334,426.9,427.5
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 340
+M5,128,65536,1321560,430.2,430.3
+VI WARNING: __vblank_interrupt outside of vblank period: 64
+VI WARNING: __vblank_interrupt outside of vblank period: 372
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 356
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+M5,256,65536,1329353,432.7,433.3
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 448
+M5,512,65536,1357739,442.0,442.8
+VI WARNING: __vblank_interrupt outside of vblank period: 242
+VI WARNING: __vblank_interrupt outside of vblank period: 620
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 162
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+M5,1024,65536,1435188,467.2,467.7
+VI WARNING: __vblank_interrupt outside of vblank period: 418
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 90
+VI WARNING: __vblank_interrupt outside of vblank period: 554
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+M5,2048,65536,1563496,509.0,509.5
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 104
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 242
+M5,4096,65536,1565715,509.7,510.0
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 432
+VI WARNING: __vblank_interrupt outside of vblank period: 270
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+M5,8192,65536,1569461,510.9,511.2
+VI WARNING: __vblank_interrupt outside of vblank period: 432
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+M5,16384,65536,1576937,513.3,514.1
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+VI WARNING: __vblank_interrupt outside of vblank period: 346
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+M5,32768,65536,1589828,517.5,518.0
+M5,# done
+M7,kind,cell,units,bytes_per_pass,win_us,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_mean,tmem_us_mean,rdp_MBps_alone,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 184
+M7,fill,alone,112,17203200,25000.1,0.0,0.0,0,0.00,84786.4,84786.4,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 446
+VI WARNING: __vblank_interrupt outside of vblank period: 194
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+M7,fill,cpu,112,17203200,27058.6,412.1,412.9,0,0.00,84786.4,92158.5,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+M7,fill,cr16,112,17203200,7103.9,428.7,433.6,0,0.00,84786.4,86971.2,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 542
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+M7,fill,sp_rd2k,112,17203200,25000.1,0.0,0.0,4652,381.12,84786.4,111439.4,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 558
+VI WARNING: __vblank_interrupt outside of vblank period: 428
+VI WARNING: __vblank_interrupt outside of vblank period: 300
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 46
+M7,fill,sp_rd64,112,17203200,25000.2,0.0,0.0,54281,138.96,84786.4,95541.6,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 596
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+M7,load,alone,2605,10670080,25000.1,0.0,0.0,0,0.00,82829.1,82829.1,79730.7,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+VI WARNING: __vblank_interrupt outside of vblank period: 294
+VI WARNING: __vblank_interrupt outside of vblank period: 420
+VI WARNING: __vblank_interrupt outside of vblank period: 548
+M7,load,cpu,2605,10670080,31480.6,479.9,480.4,0,0.00,82829.1,84206.0,80988.0,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 200
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+M7,load,cr16,2605,10670080,7895.9,480.9,481.9,0,0.00,82829.1,83386.1,80179.1,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 418
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+M7,load,sp_rd2k,2605,10670080,25000.3,0.0,0.0,4659,381.69,82829.1,109600.6,79999.1,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+VI WARNING: __vblank_interrupt outside of vblank period: 44
+VI WARNING: __vblank_interrupt outside of vblank period: 228
+VI WARNING: __vblank_interrupt outside of vblank period: 416
+VI WARNING: __vblank_interrupt outside of vblank period: 604
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+M7,load,sp_rd64,2605,10670080,25000.1,0.0,0.0,52894,135.41,82829.1,85625.8,82433.9,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 210
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 184
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 156
+M7,rectz,alone,17,7987200,25000.2,0.0,0.0,0,0.00,79691.8,79691.8,29.9,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 528
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+M7,rectz,cpu,17,7987200,29051.2,442.7,443.3,0,0.00,79691.8,86762.3,32.3,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+M7,rectz,cr16,17,7987200,7559.5,459.7,461.4,0,0.00,79691.8,81646.5,31.2,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 562
+VI WARNING: __vblank_interrupt outside of vblank period: 152
+VI WARNING: __vblank_interrupt outside of vblank period: 364
+VI WARNING: __vblank_interrupt outside of vblank period: 580
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+M7,rectz,sp_rd2k,17,7987200,25000.3,0.0,0.0,4653,381.17,79691.8,106500.5,30.0,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 434
+VI WARNING: __vblank_interrupt outside of vblank period: 64
+VI WARNING: __vblank_interrupt outside of vblank period: 316
+VI WARNING: __vblank_interrupt outside of vblank period: 572
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+M7,rectz,sp_rd64,17,7987200,25000.1,0.0,0.0,53795,137.71,79691.8,87777.1,34.6,100.2,5,5
+M7,# done
+M8,kind,cell,units,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,tmem_us_mean,us_per_4k,MBps_alone,tmem_frac,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+VI WARNING: __vblank_interrupt outside of vblank period: 308
+VI WARNING: __vblank_interrupt outside of vblank period: 614
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 118
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 372
+VI WARNING: __vblank_interrupt outside of vblank period: 500
+M8,load,alone,2605,25000.2,0,0,82844.4,82844.4,79755.5,31.80,128.8,0.963,5,5
+M8,load,cpu,2605,31475.2,480.0,480.3,82844.4,84222.2,80978.8,31.80,128.8,0.963,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 550
+VI WARNING: __vblank_interrupt outside of vblank period: 622
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 68
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 210
+VI WARNING: __vblank_interrupt outside of vblank period: 424
+VI WARNING: __vblank_interrupt outside of vblank period: 538
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+M8,loadblk,alone,2827,25000.3,0,0,82425.1,82425.1,80514.0,29.16,140.5,0.977,5,5
+M8,loadblk,cpu,2827,28838.9,439.4,440.0,82425.1,83722.9,81666.5,29.16,140.5,0.977,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 446
+VI WARNING: __vblank_interrupt outside of vblank period: 530
+VI WARNING: __vblank_interrupt outside of vblank period: 616
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 74
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+VI WARNING: __vblank_interrupt outside of vblank period: 508
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+M8,load32,alone,2605,25000.2,0,0,82833.5,82833.5,79778.9,31.80,128.8,0.963,5,5
+M8,load32,cpu,2605,31484.7,479.9,480.4,82833.5,84201.4,81018.8,31.80,128.8,0.963,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+VI WARNING: __vblank_interrupt outside of vblank period: 416
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 338
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+VI WARNING: __vblank_interrupt outside of vblank period: 506
+M8,loadi8,alone,2320,25000.1,0,0,81312.2,81312.2,77402.7,35.05,116.9,0.952,5,5
+M8,loadi8,cpu,2320,34205.4,521.8,521.9,81312.2,82832.7,78812.0,35.05,116.9,0.952,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 416
+VI WARNING: __vblank_interrupt outside of vblank period: 504
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+VI WARNING: __vblank_interrupt outside of vblank period: 146
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 552
+VI WARNING: __vblank_interrupt outside of vblank period: 50
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 298
+M8,loadnarrow,alone,1366,25000.1,0,0,82948.8,82948.8,11190.3,60.72,67.5,0.135,5,5
+M8,loadnarrow,cpu,1366,30853.4,470.2,470.8,82948.8,84119.4,11190.3,60.72,67.5,0.135,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 440
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 598
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 50
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 402
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+M8,loadwide,alone,2775,25000.1,0,0,82646.4,82646.4,80506.0,29.78,137.5,0.974,5,5
+M8,loadwide,cpu,2775,29569.0,450.4,451.2,82646.4,83758.3,81444.8,29.78,137.5,0.974,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 200
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 500
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 396
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+M8,load48,alone,1466,25000.3,0,0,82511.1,82511.1,33060.7,56.28,72.5,0.401,5,5
+M8,load48,cpu,1466,29822.6,454.5,455.1,82511.1,84753.1,34560.2,56.28,72.5,0.401,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+VI WARNING: __vblank_interrupt outside of vblank period: 212
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+VI WARNING: __vblank_interrupt outside of vblank period: 204
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+M8,load64r,alone,2320,25000.2,0,0,81308.2,81308.2,77397.3,35.05,116.9,0.952,5,5
+M8,load64r,cpu,2320,34201.7,521.6,521.9,81308.2,82775.6,78759.9,35.05,116.9,0.952,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 356
+VI WARNING: __vblank_interrupt outside of vblank period: 432
+VI WARNING: __vblank_interrupt outside of vblank period: 508
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 216
+VI WARNING: __vblank_interrupt outside of vblank period: 338
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 82
+M8,load96,alone,2119,25000.2,0,0,82538.9,82538.9,79744.4,38.95,103.5,0.966,5,5
+M8,load96,cpu,2119,30381.4,462.9,463.6,82538.9,84058.4,81160.1,38.95,103.5,0.966,5,5
+M8,# done
+M6,mode,fb_phys,fb_bytes,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us
+VI WARNING: __vblank_interrupt outside of vblank period: 434
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 218
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+M6,320x240x16,000d0d80,153600,u32r,383.2,383.6,0
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+VI WARNING: __vblank_interrupt outside of vblank period: 80
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+M6,320x240x16,000d0d80,153600,u64r,401.4,402.5,0
+VI WARNING: __vblank_interrupt outside of vblank period: 178
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 192
+M6,320x240x16,000d0d80,153600,u32w,191.1,191.8,0
+VI WARNING: __vblank_interrupt outside of vblank period: 218
+VI WARNING: __vblank_interrupt outside of vblank period: 162
+M6,320x240x16,000d0d80,153600,cr16,422.3,426.1,0
+VI WARNING: __vblank_interrupt outside of vblank period: 410
+VI WARNING: __vblank_interrupt outside of vblank period: 556
+VI WARNING: __vblank_interrupt outside of vblank period: 76
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+M6,320x240x16,000d0d80,153600,rdp_fill,0,0,84794.9
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+M6,320x240x32,00085c80,307200,u32r,406.1,408.5,0
+VI WARNING: __vblank_interrupt outside of vblank period: 428
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 438
+M6,320x240x32,00085c80,307200,u64r,425.8,427.1,0
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+M6,320x240x32,00085c80,307200,u32w,206.7,208.3,0
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+M6,320x240x32,00085c80,307200,cr16,446.0,449.2,0
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 502
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+M6,320x240x32,00085c80,307200,rdp_fill,0,0,92273.8
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+VI WARNING: __vblank_interrupt outside of vblank period: 376
+VI WARNING: __vblank_interrupt outside of vblank period: 212
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+M6,640x480x16,00540040,614400,u32r,405.2,407.1,0
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 228
+VI WARNING: __vblank_interrupt outside of vblank period: 80
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+M6,640x480x16,00540040,614400,u64r,425.3,426.7,0
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+M6,640x480x16,00540040,614400,u32w,206.5,207.6,0
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+M6,640x480x16,00540040,614400,cr16,439.0,447.6,0
+VI WARNING: __vblank_interrupt outside of vblank period: 68
+VI WARNING: __vblank_interrupt outside of vblank period: 448
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 588
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+M6,640x480x16,00540040,614400,rdp_fill,0,0,92236.2
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+VI WARNING: __vblank_interrupt outside of vblank period: 460
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 352
+M6,640x480x32,00540040,1228800,u32r,472.5,476.5,0
+VI WARNING: __vblank_interrupt outside of vblank period: 334
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+M6,640x480x32,00540040,1228800,u64r,497.0,498.7,0
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 534
+VI WARNING: __vblank_interrupt outside of vblank period: 488
+M6,640x480x32,00540040,1228800,u32w,259.7,264.0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+M6,640x480x32,00540040,1228800,cr16,549.2,570.4,0
+VI WARNING: __vblank_interrupt outside of vblank period: 104
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+VI WARNING: __vblank_interrupt outside of vblank period: 444
+M6,640x480x32,00540040,1228800,rdp_fill,0,0,112685.7
+M6,# done
+M6b,fb_phys,state,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after,vi_ctrl_after,vi_hvideo_after
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 424
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+M6b,00100000,shown,u32r,382.5,383.4,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+M6b,00100000,shown,u64r,401.3,402.5,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 180
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 194
+M6b,00100000,shown,u32w,191.0,191.4,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 180
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+M6b,00100000,shown,cr16,421.6,425.9,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 150
+VI WARNING: __vblank_interrupt outside of vblank period: 292
+VI WARNING: __vblank_interrupt outside of vblank period: 438
+VI WARNING: __vblank_interrupt outside of vblank period: 582
+M6b,00100000,shown,rdp_fill,0,0,84736.5,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 614
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 480
+M6b,00280000,shown,u32r,392.6,394.2,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 302
+M6b,00280000,shown,u64r,411.6,412.6,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 376
+VI WARNING: __vblank_interrupt outside of vblank period: 188
+M6b,00280000,shown,u32w,193.9,194.8,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+M6b,00280000,shown,cr16,426.6,431.7,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 378
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+VI WARNING: __vblank_interrupt outside of vblank period: 44
+VI WARNING: __vblank_interrupt outside of vblank period: 186
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+M6b,00280000,shown,rdp_fill,0,0,84748.6,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+VI WARNING: __vblank_interrupt outside of vblank period: 232
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 598
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+M6b,00100000,blank,u32r,373.0,373.5,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 278
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+M6b,00100000,blank,u64r,392.4,392.9,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+M6b,00100000,blank,u32w,184.3,184.7,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 116
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+M6b,00100000,blank,cr16,412.6,414.5,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 348
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+M6b,00100000,blank,rdp_fill,0,0,81941.4,00100000,00003302,00000000
+M6b,# done
+M6c,fb_phys,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after,vi_ctrl_after
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 270
+M6c,00100000,u32r,405.9,408.4,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 322
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+M6c,00100000,u64r,425.9,427.7,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+VI WARNING: __vblank_interrupt outside of vblank period: 334
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+M6c,00100000,u32w,206.7,208.2,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+M6c,00100000,cr16,443.4,449.2,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+VI WARNING: __vblank_interrupt outside of vblank period: 604
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+M6c,00100000,rdp_fill,0,0,92224.5,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 304
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+VI WARNING: __vblank_interrupt outside of vblank period: 236
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+M6c,00280000,u32r,418.8,421.7,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 430
+VI WARNING: __vblank_interrupt outside of vblank period: 298
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+M6c,00280000,u64r,440.4,442.5,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 396
+M6c,00280000,u32w,212.4,213.5,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+VI WARNING: __vblank_interrupt outside of vblank period: 134
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+M6c,00280000,cr16,465.2,474.0,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 506
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+M6c,00280000,rdp_fill,0,0,92213.1,00280000,00003203
+M6c,# done
+M9,spfloor,len,delay_iters,dmas,win_us,ns_per_dma,MBps
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 476
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+M9,spfloor,64,0,52371,25000.2,477.4,134.07
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 346
+VI WARNING: __vblank_interrupt outside of vblank period: 560
+VI WARNING: __vblank_interrupt outside of vblank period: 150
+VI WARNING: __vblank_interrupt outside of vblank period: 364
+M9,spfloor,64,1,49739,25000.1,502.6,127.33
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 604
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 236
+M9,spfloor,64,2,42194,25000.1,592.5,108.02
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+VI WARNING: __vblank_interrupt outside of vblank period: 88
+VI WARNING: __vblank_interrupt outside of vblank period: 302
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+M9,spfloor,64,4,33931,25000.1,736.8,86.86
+VI WARNING: __vblank_interrupt outside of vblank period: 368
+VI WARNING: __vblank_interrupt outside of vblank period: 582
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+VI WARNING: __vblank_interrupt outside of vblank period: 600
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+M9,spfloor,64,8,23670,25000.1,1056.2,60.59
+VI WARNING: __vblank_interrupt outside of vblank period: 280
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+VI WARNING: __vblank_interrupt outside of vblank period: 84
+VI WARNING: __vblank_interrupt outside of vblank period: 298
+VI WARNING: __vblank_interrupt outside of vblank period: 512
+M9,spfloor,64,16,14741,25000.1,1696.0,37.74
+VI WARNING: __vblank_interrupt outside of vblank period: 148
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 576
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+M9,spfloor,64,32,8401,25000.1,2975.9,21.51
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 232
+VI WARNING: __vblank_interrupt outside of vblank period: 452
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 260
+M9,spfloor,128,0,52255,25000.2,478.4,267.54
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 114
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 550
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+M9,spfloor,128,1,45843,25000.1,545.3,234.71
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+VI WARNING: __vblank_interrupt outside of vblank period: 622
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+M9,spfloor,128,2,40036,25000.1,624.4,204.98
+VI WARNING: __vblank_interrupt outside of vblank period: 326
+VI WARNING: __vblank_interrupt outside of vblank period: 542
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 348
+VI WARNING: __vblank_interrupt outside of vblank period: 566
+M9,spfloor,128,4,33225,25000.1,752.5,170.11
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 418
+VI WARNING: __vblank_interrupt outside of vblank period: 180
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+M9,spfloor,128,8,23656,25000.1,1056.8,121.12
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 46
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+M9,spfloor,128,16,14740,25000.1,1696.1,75.47
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+VI WARNING: __vblank_interrupt outside of vblank period: 112
+VI WARNING: __vblank_interrupt outside of vblank period: 326
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+M9,spfloor,128,32,8401,25000.1,2975.9,43.01
+VI WARNING: __vblank_interrupt outside of vblank period: 392
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+M9,spfloor,512,0,18599,25000.1,1344.2,380.90
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+VI WARNING: __vblank_interrupt outside of vblank period: 538
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 348
+VI WARNING: __vblank_interrupt outside of vblank period: 566
+M9,spfloor,512,4,18598,25000.3,1344.2,380.89
+VI WARNING: __vblank_interrupt outside of vblank period: 208
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 236
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+M9,spfloor,512,16,14597,25000.1,1712.7,298.94
+VI WARNING: __vblank_interrupt outside of vblank period: 94
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 530
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+VI WARNING: __vblank_interrupt outside of vblank period: 352
+M9,spfloor,512,32,8401,25000.1,2975.9,172.05
+M9,wb,cell,lines,ticks_min,ns_per_line_min,ns_per_line_mean,rdp_alone_us,rdp_us_mean,rdp_started,rdp_busy_after
+M9,wb,cdirty8k,32768,65952,42.9,42.9,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 238
+M9,wb,cwb8k,32768,439098,285.9,287.8,0.0,0.0,0,0
+M9,wb,writeback_alone,32768,373146,242.9,244.8,0,0,0,0
+M9,wb,cdirty8k+rdp,32768,66043,43.0,43.0,84839.2,84937.6,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 310
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+M9,wb,cwb8k+rdp,32768,573549,373.4,374.4,84839.2,85774.3,5,5
+M9,wb,writeback_alone+rdp,32768,507506,330.4,331.4,0,0,0,0
+M9,ai,cell,accesses,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,ai_status_before,ai_status_after,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 298
+VI WARNING: __vblank_interrupt outside of vblank period: 502
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+M9,ai,u32r,65536,382.4,383.3,0.0,0.0,00000000,00000000,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 240
+VI WARNING: __vblank_interrupt outside of vblank period: 460
+VI WARNING: __vblank_interrupt outside of vblank period: 46
+M9,ai,u32r+ai,65536,384.1,385.2,0.0,0.0,c3d9042d,43d9016c,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+M9,ai,cr16,16384,425.2,429.4,0.0,0.0,00000000,00000000,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 146
+M9,ai,cr16+ai,16384,424.1,428.6,0.0,0.0,c3f800cd,43f9033c,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+VI WARNING: __vblank_interrupt outside of vblank period: 86
+VI WARNING: __vblank_interrupt outside of vblank period: 296
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+M9,ai,u32w,65536,192.1,192.5,0.0,0.0,00000000,00000000,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+M9,ai,u32w+ai,65536,192.1,193.0,0.0,0.0,c3d1013d,43d80306,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+VI WARNING: __vblank_interrupt outside of vblank period: 336
+VI WARNING: __vblank_interrupt outside of vblank period: 484
+M9,ai,rdp,0,0.0,0.0,84839.2,84988.5,00000000,00000000,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 440
+VI WARNING: __vblank_interrupt outside of vblank period: 184
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+M9,ai,rdp+ai,0,0.0,0.0,84839.2,85308.6,c3d90343,43f90034,5,5
+M9,# done
+M4,cell,cpu_ns_min,cpu_ns_mean,rdp_us_min,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 578
+VI WARNING: __vblank_interrupt outside of vblank period: 154
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 568
+VI WARNING: __vblank_interrupt outside of vblank period: 144
+M4,cpu_rspq_idle,382.4,383.2,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+M4,rspq_fill_alone,0.0,0.0,84782.7,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+M4,cpu+rspq_fill,412.2,413.2,92192.8,5,5
+M4,# done
+WARNING: Allocations beyond 4 MiB: this ROM requires the expansion pak to work properly.
+WARNING: Call assert_memory_expanded() or is_memory_expanded() in main to disable this warning.
+MB,# MemBench: tv=PAL mem=8 MiB ticks/s=46875000 buf=256 KiB runs=5 arena=00100000 cpu_buf=00200000 rdp_target=00300000 sp_region=00400000
+MB,# fill pass: 8 units 5704.7 us -> 112 units (713.09 us per unit, 215 MB/s)
+MB,# load pass: 256 units 7860.8 us -> 2605 units (30.71 us per unit, 133 MB/s)
+MB,# rectz pass: 8 units 36392.8 us -> 17 units (4549.09 us per unit, 106 MB/s)
+MB,# loadblk pass: 256 units 7244.6 us -> 2826 units (28.30 us per unit, 145 MB/s)
+MB,# load32 pass: 256 units 7860.2 us -> 2605 units (30.70 us per unit, 133 MB/s)
+MB,# loadi8 pass: 256 units 8825.5 us -> 2320 units (34.47 us per unit, 119 MB/s)
+MB,# loadnarrow pass: 256 units 14986.2 us -> 1366 units (58.54 us per unit, 70 MB/s)
+MB,# loadwide pass: 256 units 7381.5 us -> 2774 units (28.83 us per unit, 142 MB/s)
+MB,# load48 pass: 256 units 13970.4 us -> 1465 units (54.57 us per unit, 75 MB/s)
+MB,# load64r pass: 256 units 8825.2 us -> 2320 units (34.47 us per unit, 119 MB/s)
+MB,# load96 pass: 256 units 9661.7 us -> 2119 units (37.74 us per unit, 107 MB/s)
+MB,# rectz check: pixel (100,100) reads 1235, texel 1234 -> written
+MB,pattern,load,accesses,bytes_per,ticks_min,ticks_mean,ns_min,ns_mean,MBps_min,rdp_alone_us,rdp_us,rdp_started,rdp_busy_after
+MB,u32r,vioff,65536,4,1119265,1119298,364.3,364.4,11.0,0.0,0.0,0,0
+MB,u64r,vioff,32768,8,590951,590978,384.7,384.8,20.8,0.0,0.0,0,0
+MB,u32w,vioff,65536,4,548400,548446,178.5,178.5,22.4,0.0,0.0,0,0
+MB,u64w,vioff,32768,8,299319,299364,194.9,194.9,41.1,0.0,0.0,0,0
+MB,u32r_s64,vioff,65536,4,1200871,1200891,390.9,390.9,10.2,0.0,0.0,0,0
+MB,u32r_s4k,vioff,65536,4,1445615,1445658,470.6,470.6,8.5,0.0,0.0,0,0
+MB,cr16,vioff,16384,16,311182,311509,405.2,405.6,39.5,0.0,0.0,0,0
+MB,cw16,vioff,16384,32,646759,646910,842.1,842.3,38.0,0.0,0.0,0,0
+MB,# fill pass alone (112 layers): VI off 79459.2 us, VI on 84838.7 us
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 450
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 228
+VI WARNING: __vblank_interrupt outside of vblank period: 432
+MB,u32r,idle,65536,4,1176013,1177980,382.8,383.5,10.4,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 310
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+MB,u64r,idle,32768,8,616759,617706,401.5,402.2,19.9,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+VI WARNING: __vblank_interrupt outside of vblank period: 278
+VI WARNING: __vblank_interrupt outside of vblank period: 86
+MB,u32w,idle,65536,4,586428,589407,190.9,191.9,21.0,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+MB,u64w,idle,32768,8,316353,319854,206.0,208.2,38.8,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 448
+MB,u32r_s64,idle,65536,4,1249319,1251593,406.7,407.4,9.8,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 296
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 524
+VI WARNING: __vblank_interrupt outside of vblank period: 322
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+MB,u32r_s4k,idle,65536,4,1510198,1511269,491.6,491.9,8.1,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 118
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+MB,cr16,idle,16384,16,324391,327661,422.4,426.6,37.9,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+MB,cw16,idle,16384,32,670676,672196,873.3,875.3,36.6,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 574
+VI WARNING: __vblank_interrupt outside of vblank period: 322
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+VI WARNING: __vblank_interrupt outside of vblank period: 448
+MB,u32r,rdpfill,65536,4,1266030,1268583,412.1,413.0,9.7,84838.7,92074.0,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 260
+MB,u64r,rdpfill,32768,8,637850,639504,415.3,416.3,19.3,84838.7,88536.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 400
+VI WARNING: __vblank_interrupt outside of vblank period: 600
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 172
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+MB,u32w,rdpfill,65536,4,1010865,1011525,329.1,329.3,12.2,84838.7,86467.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 288
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 186
+MB,u64w,rdpfill,32768,8,503143,505396,327.6,329.0,24.4,84838.7,85658.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+VI WARNING: __vblank_interrupt outside of vblank period: 600
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+VI WARNING: __vblank_interrupt outside of vblank period: 100
+MB,u32r_s64,rdpfill,65536,4,1269513,1272293,413.3,414.2,9.7,84838.7,92097.3,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 550
+VI WARNING: __vblank_interrupt outside of vblank period: 474
+VI WARNING: __vblank_interrupt outside of vblank period: 402
+MB,u32r_s4k,rdpfill,65536,4,1531987,1534481,498.7,499.5,8.0,84838.7,97733.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+MB,cr16,rdpfill,16384,16,329590,332730,429.2,433.2,37.3,84838.7,86930.7,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+VI WARNING: __vblank_interrupt outside of vblank period: 512
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+MB,cw16,rdpfill,16384,32,791632,792683,1030.8,1032.1,31.0,84838.7,90574.0,5,5
+MB,# done
+M2,cell,cpu,rdp,sp,pi,runs,win_us,cpu_n,cpu_ticks_min,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_min,rdp_us_mean,rdp_started,rdp_busy_after,rdp_timeout,pi_us_mean,pi_MBps,pi_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 360
+VI WARNING: __vblank_interrupt outside of vblank period: 578
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 600
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+M2,sp_rd64,-,0,rd64,0,5,25000.1,0,1171879,0.0,0.0,52375,134.08,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 284
+VI WARNING: __vblank_interrupt outside of vblank period: 504
+VI WARNING: __vblank_interrupt outside of vblank period: 96
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 532
+M2,sp_rd512,-,0,rd512,0,5,25000.1,0,1171880,0.0,0.0,18598,380.90,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 466
+M2,sp_rd2k,-,0,rd2048,0,5,25000.3,0,1171879,0.0,0.0,4647,380.74,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+M2,sp_wr64,-,0,wr64,0,5,25000.1,0,1171879,0.0,0.0,53350,136.58,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 464
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 274
+M2,sp_wr512,-,0,wr512,0,5,25000.1,0,1171879,0.0,0.0,19368,396.65,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+VI WARNING: __vblank_interrupt outside of vblank period: 572
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+M2,sp_wr2k,-,0,wr2048,0,5,25000.1,0,1171879,0.0,0.0,4846,397.00,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 228
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 270
+VI WARNING: __vblank_interrupt outside of vblank period: 284
+M2,sp_rd2k+cpu,u64r,0,rd2048,0,5,18454.1,32768,864452,562.8,563.2,2167,240.49,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 452
+VI WARNING: __vblank_interrupt outside of vblank period: 510
+VI WARNING: __vblank_interrupt outside of vblank period: 566
+M2,sp_wr2k+cpu,u64r,0,wr2048,0,5,19816.8,32768,928321,604.4,604.8,2145,221.72,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 420
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+M2,sp_rd64+cpu,u64r,0,rd64,0,5,15303.3,32768,714542,465.2,467.0,32822,137.27,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+M2,sp_rd2k+cr16,cr16,0,rd2048,0,5,13832.5,16384,646119,841.3,844.3,1932,286.14,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 596
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+VI WARNING: __vblank_interrupt outside of vblank period: 234
+M2,sp_rd2k+rdp,-,1,rd2048,0,5,25000.3,0,1171879,0.0,0.0,4649,380.91,84838.7,111291.7,111694.9,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 398
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 510
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+M2,sp_wr2k+rdp,-,1,wr2048,0,5,25000.1,0,1171879,0.0,0.0,4845,396.95,84838.7,111307.9,111434.0,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+M2,sp_rd64+rdp,-,1,rd64,0,5,25000.2,0,1171879,0.0,0.0,54294,138.99,84838.7,95472.7,95510.8,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 506
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 530
+M2,sp_rd2k+cpu+rdp,u64r,1,rd2048,0,5,18461.2,32768,864491,562.8,563.4,2167,240.44,84838.7,104751.0,104829.0,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 572
+VI WARNING: __vblank_interrupt outside of vblank period: 148
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+M2,sp_wr2k+cpu+rdp,u64r,1,wr2048,0,5,19815.3,32768,927302,603.7,604.7,2145,221.74,84838.7,106129.6,106217.4,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 614
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 234
+VI WARNING: __vblank_interrupt outside of vblank period: 88
+VI WARNING: __vblank_interrupt outside of vblank period: 288
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 396
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+M2,pi,-,0,-,1,5,25000.2,0,1171880,0.0,0.0,0,0.00,0.0,0.0,0.0,0,0,0,202340.8,5.18,5
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 192
+VI WARNING: __vblank_interrupt outside of vblank period: 412
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 466
+VI WARNING: __vblank_interrupt outside of vblank period: 300
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+VI WARNING: __vblank_interrupt outside of vblank period: 574
+M2,pi+cpu,u64r,0,-,1,5,13258.4,32768,621295,404.5,404.6,0,0.00,0.0,0.0,0.0,0,0,0,202067.2,5.19,5
+VI WARNING: __vblank_interrupt outside of vblank period: 206
+VI WARNING: __vblank_interrupt outside of vblank period: 68
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 192
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+M2,pi+rdp,-,1,-,1,5,25000.3,0,1171879,0.0,0.0,0,0.00,84838.7,85136.4,85141.8,5,5,0,202291.3,5.18,5
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 260
+VI WARNING: __vblank_interrupt outside of vblank period: 190
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+VI WARNING: __vblank_interrupt outside of vblank period: 340
+VI WARNING: __vblank_interrupt outside of vblank period: 560
+VI WARNING: __vblank_interrupt outside of vblank period: 488
+M2,pi+sp_rd2k,-,0,rd2048,1,5,25000.3,0,1171879,0.0,0.0,4552,372.94,0.0,0.0,0.0,0,0,0,204607.2,5.12,5
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 296
+VI WARNING: __vblank_interrupt outside of vblank period: 240
+VI WARNING: __vblank_interrupt outside of vblank period: 460
+VI WARNING: __vblank_interrupt outside of vblank period: 402
+VI WARNING: __vblank_interrupt outside of vblank period: 622
+VI WARNING: __vblank_interrupt outside of vblank period: 566
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+M2,pi+sp_wr2k,-,0,wr2048,1,5,25000.3,0,1171879,0.0,0.0,4740,388.30,0.0,0.0,0.0,0,0,0,205000.6,5.11,5
+VI WARNING: __vblank_interrupt outside of vblank period: 400
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+M2,cpu,u64r,0,-,0,5,13193.5,32768,616718,401.5,402.6,0,0.00,0.0,0.0,0.0,0,0,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+M2,cpu+rdp,u64r,1,-,0,5,13648.7,32768,637940,415.3,416.5,0,0.00,84838.7,88538.8,88582.3,5,5,0,0.0,0.00,0
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 182
+M2,rdp,-,1,-,0,5,25000.1,0,1171879,0.0,0.0,0,0.00,84838.7,84737.5,84791.5,5,5,0,0.0,0.00,0
+M2,# done
+M3,off_kb,phys,client,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,rdp_started,rdp_busy_after,sp_dmas,sp_MBps
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+VI WARNING: __vblank_interrupt outside of vblank period: 420
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 504
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 294
+VI WARNING: __vblank_interrupt outside of vblank period: 260
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+M3,0,00100000,rdp,27073.6,412.3,413.1,84795.9,92133.6,5,5,0,0
+M3,0,00100000,sp_rd2k,36916.3,562.9,563.3,0,0,0,0,4337,240.61
+VI WARNING: __vblank_interrupt outside of vblank period: 496
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 162
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 288
+VI WARNING: __vblank_interrupt outside of vblank period: 364
+VI WARNING: __vblank_interrupt outside of vblank period: 328
+VI WARNING: __vblank_interrupt outside of vblank period: 292
+VI WARNING: __vblank_interrupt outside of vblank period: 258
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+M3,256,00140000,rdp,27066.0,412.1,413.0,84795.6,92139.1,5,5,0,0
+M3,256,00140000,sp_rd2k,36899.8,562.6,563.0,0,0,0,0,4334,240.56
+VI WARNING: __vblank_interrupt outside of vblank period: 524
+VI WARNING: __vblank_interrupt outside of vblank period: 44
+VI WARNING: __vblank_interrupt outside of vblank period: 190
+VI WARNING: __vblank_interrupt outside of vblank period: 336
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 444
+VI WARNING: __vblank_interrupt outside of vblank period: 194
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+M3,512,00180000,rdp,27059.3,412.1,412.9,84795.7,92147.6,5,5,0,0
+M3,512,00180000,sp_rd2k,36907.5,562.6,563.2,0,0,0,0,4335,240.59
+VI WARNING: __vblank_interrupt outside of vblank period: 556
+VI WARNING: __vblank_interrupt outside of vblank period: 76
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 512
+VI WARNING: __vblank_interrupt outside of vblank period: 98
+VI WARNING: __vblank_interrupt outside of vblank period: 474
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 602
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+VI WARNING: __vblank_interrupt outside of vblank period: 428
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+M3,768,001c0000,rdp,27063.4,412.2,413.0,84791.1,92159.3,5,5,0,0
+M3,768,001c0000,sp_rd2k,36907.3,562.9,563.2,0,0,0,0,4335,240.58
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 578
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+VI WARNING: __vblank_interrupt outside of vblank period: 278
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 568
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+M3,1280,00240000,rdp,37985.9,579.5,579.6,84775.6,103642.6,5,5,0,0
+M3,1280,00240000,sp_rd2k,43961.0,670.7,670.8,0,0,0,0,3770,175.63
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 234
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+VI WARNING: __vblank_interrupt outside of vblank period: 308
+VI WARNING: __vblank_interrupt outside of vblank period: 416
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 116
+VI WARNING: __vblank_interrupt outside of vblank period: 430
+VI WARNING: __vblank_interrupt outside of vblank period: 616
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+M3,1536,00280000,rdp,37988.7,579.5,579.7,84779.3,103639.6,5,5,0,0
+M3,1536,00280000,sp_rd2k,43965.6,670.6,670.9,0,0,0,0,3768,175.53
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 552
+VI WARNING: __vblank_interrupt outside of vblank period: 74
+VI WARNING: __vblank_interrupt outside of vblank period: 216
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 364
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 582
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+M3,1792,002c0000,rdp,37984.7,579.4,579.6,84778.2,103649.7,5,5,0,0
+M3,1792,002c0000,sp_rd2k,43960.9,670.6,670.8,0,0,0,0,3768,175.57
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 196
+VI WARNING: __vblank_interrupt outside of vblank period: 344
+VI WARNING: __vblank_interrupt outside of vblank period: 488
+VI WARNING: __vblank_interrupt outside of vblank period: 218
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 344
+VI WARNING: __vblank_interrupt outside of vblank period: 94
+VI WARNING: __vblank_interrupt outside of vblank period: 470
+VI WARNING: __vblank_interrupt outside of vblank period: 548
+VI WARNING: __vblank_interrupt outside of vblank period: 512
+VI WARNING: __vblank_interrupt outside of vblank period: 478
+VI WARNING: __vblank_interrupt outside of vblank period: 442
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+M3,2048,00300000,rdp,27065.0,412.2,413.0,84768.5,92153.8,5,5,0,0
+M3,2048,00300000,sp_rd2k,36925.6,563.1,563.4,0,0,0,0,4336,240.53
+VI WARNING: __vblank_interrupt outside of vblank period: 82
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 516
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 372
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+VI WARNING: __vblank_interrupt outside of vblank period: 574
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 504
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 432
+M3,2560,00380000,rdp,27075.5,412.1,413.1,84772.6,92137.5,5,5,0,0
+M3,2560,00380000,sp_rd2k,36913.1,562.6,563.2,0,0,0,0,4331,240.29
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+VI WARNING: __vblank_interrupt outside of vblank period: 398
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+VI WARNING: __vblank_interrupt outside of vblank period: 64
+VI WARNING: __vblank_interrupt outside of vblank period: 274
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 400
+VI WARNING: __vblank_interrupt outside of vblank period: 150
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 600
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 548
+VI WARNING: __vblank_interrupt outside of vblank period: 510
+M3,3072,00400000,rdp,27070.2,412.3,413.1,84766.4,92143.7,5,5,0,0
+M3,3072,00400000,sp_rd2k,36948.5,563.1,563.8,0,0,0,0,4327,239.86
+VI WARNING: __vblank_interrupt outside of vblank period: 184
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 476
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 144
+VI WARNING: __vblank_interrupt outside of vblank period: 354
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+VI WARNING: __vblank_interrupt outside of vblank period: 480
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 622
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+M3,3584,00480000,rdp,27064.0,412.1,413.0,84781.2,92148.6,5,5,0,0
+M3,3584,00480000,sp_rd2k,36945.2,563.2,563.7,0,0,0,0,4327,239.86
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+VI WARNING: __vblank_interrupt outside of vblank period: 410
+VI WARNING: __vblank_interrupt outside of vblank period: 556
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 434
+VI WARNING: __vblank_interrupt outside of vblank period: 184
+VI WARNING: __vblank_interrupt outside of vblank period: 560
+VI WARNING: __vblank_interrupt outside of vblank period: 308
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 98
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 618
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+M3,3840,004c0000,rdp,27061.3,412.1,412.9,84795.5,92138.7,5,5,0,0
+M3,3840,004c0000,sp_rd2k,36917.2,562.6,563.3,0,0,0,0,4330,240.24
+M3,# done
+M5,stride_B,accesses,ticks_min,ns_min,ns_mean
+VI WARNING: __vblank_interrupt outside of vblank period: 506
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 118
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+M5,4,65536,1302462,424.0,425.2
+VI WARNING: __vblank_interrupt outside of vblank period: 114
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 356
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+M5,8,65536,1302856,424.1,425.3
+VI WARNING: __vblank_interrupt outside of vblank period: 356
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 310
+VI WARNING: __vblank_interrupt outside of vblank period: 604
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+M5,16,65536,1306906,425.4,426.2
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+M5,32,65536,1308295,425.9,426.4
+VI WARNING: __vblank_interrupt outside of vblank period: 362
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 614
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 326
+M5,64,65536,1310153,426.5,427.6
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 340
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+M5,128,65536,1318437,429.2,430.0
+VI WARNING: __vblank_interrupt outside of vblank period: 382
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+VI WARNING: __vblank_interrupt outside of vblank period: 368
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 356
+M5,256,65536,1329415,432.8,433.5
+VI WARNING: __vblank_interrupt outside of vblank period: 98
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+VI WARNING: __vblank_interrupt outside of vblank period: 444
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+M5,512,65536,1358241,442.1,442.7
+VI WARNING: __vblank_interrupt outside of vblank period: 562
+VI WARNING: __vblank_interrupt outside of vblank period: 308
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 430
+VI WARNING: __vblank_interrupt outside of vblank period: 176
+M5,1024,65536,1430757,465.7,466.9
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+VI WARNING: __vblank_interrupt outside of vblank period: 356
+VI WARNING: __vblank_interrupt outside of vblank period: 194
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+M5,2048,65536,1563974,509.1,509.6
+VI WARNING: __vblank_interrupt outside of vblank period: 538
+VI WARNING: __vblank_interrupt outside of vblank period: 378
+VI WARNING: __vblank_interrupt outside of vblank period: 216
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 524
+M5,4096,65536,1568878,510.7,511.0
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 84
+VI WARNING: __vblank_interrupt outside of vblank period: 552
+VI WARNING: __vblank_interrupt outside of vblank period: 392
+M5,8192,65536,1569571,510.9,511.5
+VI WARNING: __vblank_interrupt outside of vblank period: 280
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 596
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 486
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+M5,16384,65536,1576794,513.3,514.1
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 558
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+M5,32768,65536,1589909,517.5,518.1
+M5,# done
+M7,kind,cell,units,bytes_per_pass,win_us,cpu_ns_min,cpu_ns_mean,sp_dmas,sp_MBps,rdp_alone_us,rdp_us_mean,tmem_us_mean,rdp_MBps_alone,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 590
+VI WARNING: __vblank_interrupt outside of vblank period: 110
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 398
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+M7,fill,alone,112,17203200,25000.1,0.0,0.0,0,0.00,84775.6,84775.6,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 178
+VI WARNING: __vblank_interrupt outside of vblank period: 556
+VI WARNING: __vblank_interrupt outside of vblank period: 304
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 432
+M7,fill,cpu,112,17203200,27060.8,412.1,412.9,0,0.00,84775.6,92159.0,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 172
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+M7,fill,cr16,112,17203200,7097.3,428.4,433.2,0,0.00,84775.6,86956.6,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 278
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 500
+M7,fill,sp_rd2k,112,17203200,25000.1,0.0,0.0,4652,381.12,84775.6,111425.8,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 294
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 536
+VI WARNING: __vblank_interrupt outside of vblank period: 406
+M7,fill,sp_rd64,112,17203200,25000.2,0.0,0.0,54287,138.97,84775.6,95520.7,0.0,202.9,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 328
+VI WARNING: __vblank_interrupt outside of vblank period: 414
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+M7,load,alone,2605,10670080,25000.1,0.0,0.0,0,0.00,82846.2,82846.2,79759.5,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 398
+VI WARNING: __vblank_interrupt outside of vblank period: 528
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 284
+M7,load,cpu,2605,10670080,31482.2,480.0,480.4,0,0.00,82846.2,84205.1,80957.7,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 80
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+M7,load,cr16,2605,10670080,7896.2,480.1,481.9,0,0.00,82846.2,83395.9,80220.5,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 152
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+M7,load,sp_rd2k,2605,10670080,25000.3,0.0,0.0,4654,381.27,82846.2,109593.0,79982.9,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+VI WARNING: __vblank_interrupt outside of vblank period: 402
+VI WARNING: __vblank_interrupt outside of vblank period: 590
+VI WARNING: __vblank_interrupt outside of vblank period: 152
+VI WARNING: __vblank_interrupt outside of vblank period: 336
+M7,load,sp_rd64,2605,10670080,25000.1,0.0,0.0,52891,135.40,82846.2,85593.5,82440.3,128.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 560
+VI WARNING: __vblank_interrupt outside of vblank period: 546
+VI WARNING: __vblank_interrupt outside of vblank period: 532
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 504
+M7,rectz,alone,17,7987200,25000.2,0.0,0.0,0,0.00,79678.0,79678.0,30.7,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 248
+VI WARNING: __vblank_interrupt outside of vblank period: 456
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+M7,rectz,cpu,17,7987200,29003.6,442.2,442.6,0,0.00,79678.0,86739.1,31.0,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+VI WARNING: __vblank_interrupt outside of vblank period: 152
+M7,rectz,cr16,17,7987200,7548.9,456.9,460.7,0,0.00,79678.0,81633.6,31.2,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 494
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+M7,rectz,sp_rd2k,17,7987200,25000.1,0.0,0.0,4649,380.91,79678.0,106548.0,30.4,100.2,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 412
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 294
+VI WARNING: __vblank_interrupt outside of vblank period: 550
+M7,rectz,sp_rd64,17,7987200,25000.1,0.0,0.0,53796,137.72,79678.0,87758.6,33.7,100.2,5,5
+M7,# done
+M8,kind,cell,units,win_us,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,tmem_us_mean,us_per_4k,MBps_alone,tmem_frac,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 316
+VI WARNING: __vblank_interrupt outside of vblank period: 400
+VI WARNING: __vblank_interrupt outside of vblank period: 484
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 334
+VI WARNING: __vblank_interrupt outside of vblank period: 460
+VI WARNING: __vblank_interrupt outside of vblank period: 590
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 218
+M8,load,alone,2605,25000.2,0,0,82847.3,82847.3,79734.2,31.80,128.8,0.962,5,5
+M8,load,cpu,2605,31477.0,480.0,480.3,82847.3,84197.6,81013.4,31.80,128.8,0.962,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+VI WARNING: __vblank_interrupt outside of vblank period: 338
+VI WARNING: __vblank_interrupt outside of vblank period: 410
+VI WARNING: __vblank_interrupt outside of vblank period: 480
+VI WARNING: __vblank_interrupt outside of vblank period: 552
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+M8,loadblk,alone,2826,25000.2,0,0,82417.8,82417.8,80513.2,29.16,140.4,0.977,5,5
+M8,loadblk,cpu,2826,28844.3,439.4,440.1,82417.8,83711.6,81665.4,29.16,140.4,0.977,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 70
+VI WARNING: __vblank_interrupt outside of vblank period: 156
+VI WARNING: __vblank_interrupt outside of vblank period: 238
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 410
+VI WARNING: __vblank_interrupt outside of vblank period: 90
+VI WARNING: __vblank_interrupt outside of vblank period: 216
+VI WARNING: __vblank_interrupt outside of vblank period: 344
+VI WARNING: __vblank_interrupt outside of vblank period: 470
+VI WARNING: __vblank_interrupt outside of vblank period: 598
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+M8,load32,alone,2605,25000.2,0,0,82843.5,82843.5,79725.0,31.80,128.8,0.962,5,5
+M8,load32,cpu,2605,31473.6,479.9,480.2,82843.5,84205.0,81003.3,31.80,128.8,0.962,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+VI WARNING: __vblank_interrupt outside of vblank period: 508
+VI WARNING: __vblank_interrupt outside of vblank period: 596
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+M8,loadi8,alone,2320,25000.1,0,0,81301.8,81301.8,77393.6,35.04,116.9,0.952,5,5
+M8,loadi8,cpu,2320,34219.0,522.0,522.1,81301.8,82838.5,78817.2,35.04,116.9,0.952,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+VI WARNING: __vblank_interrupt outside of vblank period: 216
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+VI WARNING: __vblank_interrupt outside of vblank period: 396
+VI WARNING: __vblank_interrupt outside of vblank period: 486
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 264
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+M8,loadnarrow,alone,1366,25000.1,0,0,82981.7,82981.7,11190.3,60.75,67.4,0.135,5,5
+M8,loadnarrow,cpu,1366,30859.2,470.2,470.9,82981.7,84146.0,11190.3,60.75,67.4,0.135,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 84
+VI WARNING: __vblank_interrupt outside of vblank period: 162
+VI WARNING: __vblank_interrupt outside of vblank period: 238
+VI WARNING: __vblank_interrupt outside of vblank period: 316
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+VI WARNING: __vblank_interrupt outside of vblank period: 456
+M8,loadwide,alone,2774,25000.1,0,0,82603.4,82603.4,80446.6,29.78,137.6,0.974,5,5
+M8,loadwide,cpu,2774,29559.5,450.4,451.0,82603.4,83725.4,81415.0,29.78,137.6,0.974,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 542
+VI WARNING: __vblank_interrupt outside of vblank period: 614
+VI WARNING: __vblank_interrupt outside of vblank period: 32
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+VI WARNING: __vblank_interrupt outside of vblank period: 202
+VI WARNING: __vblank_interrupt outside of vblank period: 438
+VI WARNING: __vblank_interrupt outside of vblank period: 582
+VI WARNING: __vblank_interrupt outside of vblank period: 98
+VI WARNING: __vblank_interrupt outside of vblank period: 240
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+M8,load48,alone,1465,25000.1,0,0,82428.7,82428.7,33024.2,56.27,72.5,0.401,5,5
+M8,load48,cpu,1465,29828.1,454.4,455.1,82428.7,84707.1,34535.9,56.27,72.5,0.401,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 494
+VI WARNING: __vblank_interrupt outside of vblank period: 532
+VI WARNING: __vblank_interrupt outside of vblank period: 570
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 358
+VI WARNING: __vblank_interrupt outside of vblank period: 440
+VI WARNING: __vblank_interrupt outside of vblank period: 524
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 70
+M8,load64r,alone,2320,25000.2,0,0,81307.6,81307.6,77395.2,35.05,116.9,0.952,5,5
+M8,load64r,cpu,2320,34214.9,521.7,522.1,81307.6,82830.7,78817.2,35.05,116.9,0.952,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 610
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+VI WARNING: __vblank_interrupt outside of vblank period: 134
+VI WARNING: __vblank_interrupt outside of vblank period: 206
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 542
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 282
+VI WARNING: __vblank_interrupt outside of vblank period: 404
+M8,load96,alone,2119,25000.2,0,0,82512.1,82512.1,79713.6,38.94,103.5,0.966,5,5
+M8,load96,cpu,2119,30369.4,462.9,463.4,82512.1,84047.0,81150.3,38.94,103.5,0.966,5,5
+M8,# done
+M6,mode,fb_phys,fb_bytes,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us
+VI WARNING: __vblank_interrupt outside of vblank period: 436
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 218
+VI WARNING: __vblank_interrupt outside of vblank period: 422
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+M6,320x240x16,000d0d80,153600,u32r,383.5,383.8,0
+VI WARNING: __vblank_interrupt outside of vblank period: 334
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+M6,320x240x16,000d0d80,153600,u64r,401.4,402.4,0
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 84
+M6,320x240x16,000d0d80,153600,u32w,191.0,191.5,0
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+M6,320x240x16,000d0d80,153600,cr16,421.9,427.4,0
+VI WARNING: __vblank_interrupt outside of vblank period: 534
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 344
+VI WARNING: __vblank_interrupt outside of vblank period: 492
+M6,320x240x16,000d0d80,153600,rdp_fill,0,0,84798.9
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 270
+VI WARNING: __vblank_interrupt outside of vblank period: 528
+M6,320x240x32,00085c80,307200,u32r,405.9,408.4,0
+VI WARNING: __vblank_interrupt outside of vblank period: 430
+VI WARNING: __vblank_interrupt outside of vblank period: 284
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+VI WARNING: __vblank_interrupt outside of vblank period: 438
+M6,320x240x32,00085c80,307200,u64r,425.8,427.1,0
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 166
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+M6,320x240x32,00085c80,307200,u32w,206.7,208.3,0
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+M6,320x240x32,00085c80,307200,cr16,446.2,449.2,0
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 502
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+M6,320x240x32,00085c80,307200,rdp_fill,0,0,92288.0
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+VI WARNING: __vblank_interrupt outside of vblank period: 378
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+VI WARNING: __vblank_interrupt outside of vblank period: 470
+M6,640x480x16,00540040,614400,u32r,405.2,407.2,0
+VI WARNING: __vblank_interrupt outside of vblank period: 370
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+VI WARNING: __vblank_interrupt outside of vblank period: 78
+VI WARNING: __vblank_interrupt outside of vblank period: 376
+M6,640x480x16,00540040,614400,u64r,425.4,426.8,0
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 382
+VI WARNING: __vblank_interrupt outside of vblank period: 226
+M6,640x480x16,00540040,614400,u32w,206.5,207.7,0
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+M6,640x480x16,00540040,614400,cr16,438.9,447.6,0
+VI WARNING: __vblank_interrupt outside of vblank period: 64
+VI WARNING: __vblank_interrupt outside of vblank period: 444
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+VI WARNING: __vblank_interrupt outside of vblank period: 340
+M6,640x480x16,00540040,614400,rdp_fill,0,0,92252.8
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 224
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+M6,640x480x32,00540040,1228800,u32r,472.6,476.5,0
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 258
+VI WARNING: __vblank_interrupt outside of vblank period: 190
+VI WARNING: __vblank_interrupt outside of vblank period: 122
+VI WARNING: __vblank_interrupt outside of vblank period: 50
+M6,640x480x32,00540040,1228800,u64r,495.7,498.0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 530
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+M6,640x480x32,00540040,1228800,u32w,259.6,264.3,0
+VI WARNING: __vblank_interrupt outside of vblank period: 272
+VI WARNING: __vblank_interrupt outside of vblank period: 30
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+M6,640x480x32,00540040,1228800,cr16,549.2,570.8,0
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+VI WARNING: __vblank_interrupt outside of vblank period: 494
+VI WARNING: __vblank_interrupt outside of vblank period: 258
+VI WARNING: __vblank_interrupt outside of vblank period: 46
+VI WARNING: __vblank_interrupt outside of vblank period: 436
+M6,640x480x32,00540040,1228800,rdp_fill,0,0,112654.8
+M6,# done
+M6b,fb_phys,state,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after,vi_ctrl_after,vi_hvideo_after
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 424
+VI WARNING: __vblank_interrupt outside of vblank period: 624
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+VI WARNING: __vblank_interrupt outside of vblank period: 242
+M6b,00100000,shown,u32r,383.1,383.6,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+VI WARNING: __vblank_interrupt outside of vblank period: 360
+VI WARNING: __vblank_interrupt outside of vblank period: 190
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+M6b,00100000,shown,u64r,401.4,402.2,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 76
+VI WARNING: __vblank_interrupt outside of vblank period: 280
+M6b,00100000,shown,u32w,191.0,191.8,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+M6b,00100000,shown,cr16,421.7,427.4,0,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 342
+VI WARNING: __vblank_interrupt outside of vblank period: 488
+M6b,00100000,shown,rdp_fill,0,0,84747.1,00100000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+VI WARNING: __vblank_interrupt outside of vblank period: 440
+VI WARNING: __vblank_interrupt outside of vblank period: 34
+VI WARNING: __vblank_interrupt outside of vblank period: 260
+VI WARNING: __vblank_interrupt outside of vblank period: 486
+M6b,00280000,shown,u32r,393.0,394.5,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 368
+VI WARNING: __vblank_interrupt outside of vblank period: 206
+VI WARNING: __vblank_interrupt outside of vblank period: 44
+VI WARNING: __vblank_interrupt outside of vblank period: 306
+M6b,00280000,shown,u64r,411.5,412.4,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 164
+VI WARNING: __vblank_interrupt outside of vblank period: 382
+VI WARNING: __vblank_interrupt outside of vblank period: 198
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+M6b,00280000,shown,u32w,193.9,194.7,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 178
+M6b,00280000,shown,cr16,426.7,432.6,0,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 572
+VI WARNING: __vblank_interrupt outside of vblank period: 92
+VI WARNING: __vblank_interrupt outside of vblank period: 234
+VI WARNING: __vblank_interrupt outside of vblank period: 380
+M6b,00280000,shown,rdp_fill,0,0,84757.5,00280000,00003202,00800300
+VI WARNING: __vblank_interrupt outside of vblank period: 548
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+VI WARNING: __vblank_interrupt outside of vblank period: 286
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+M6b,00100000,blank,u32r,373.0,373.5,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 290
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+M6b,00100000,blank,u64r,392.4,392.9,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 344
+VI WARNING: __vblank_interrupt outside of vblank period: 140
+M6b,00100000,blank,u32w,184.3,184.7,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 60
+M6b,00100000,blank,cr16,412.7,414.4,0,00100000,00003302,00000000
+VI WARNING: __vblank_interrupt outside of vblank period: 302
+VI WARNING: __vblank_interrupt outside of vblank period: 360
+VI WARNING: __vblank_interrupt outside of vblank period: 416
+VI WARNING: __vblank_interrupt outside of vblank period: 474
+VI WARNING: __vblank_interrupt outside of vblank period: 532
+M6b,00100000,blank,rdp_fill,0,0,81944.5,00100000,00003302,00000000
+M6b,# done
+M6c,fb_phys,client,cpu_ns_min,cpu_ns_mean,rdp_alone_us,vi_origin_after,vi_ctrl_after
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+VI WARNING: __vblank_interrupt outside of vblank period: 138
+VI WARNING: __vblank_interrupt outside of vblank period: 392
+VI WARNING: __vblank_interrupt outside of vblank period: 16
+VI WARNING: __vblank_interrupt outside of vblank period: 270
+M6c,00100000,u32r,405.8,408.3,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 170
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 320
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+M6c,00100000,u64r,425.8,427.7,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 58
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 172
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+M6c,00100000,u32w,206.7,208.2,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+M6c,00100000,cr16,443.6,449.1,0,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 472
+VI WARNING: __vblank_interrupt outside of vblank period: 220
+VI WARNING: __vblank_interrupt outside of vblank period: 602
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+M6c,00100000,rdp_fill,0,0,92207.1,00100000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 20
+VI WARNING: __vblank_interrupt outside of vblank period: 302
+VI WARNING: __vblank_interrupt outside of vblank period: 584
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 514
+M6c,00280000,u32r,418.4,421.7,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 426
+VI WARNING: __vblank_interrupt outside of vblank period: 292
+VI WARNING: __vblank_interrupt outside of vblank period: 160
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+M6c,00280000,u64r,440.1,442.4,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 384
+VI WARNING: __vblank_interrupt outside of vblank period: 236
+VI WARNING: __vblank_interrupt outside of vblank period: 88
+VI WARNING: __vblank_interrupt outside of vblank period: 386
+M6c,00280000,u32w,212.4,213.5,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 120
+M6c,00280000,cr16,465.2,474.1,0,00280000,00003203
+VI WARNING: __vblank_interrupt outside of vblank period: 366
+VI WARNING: __vblank_interrupt outside of vblank period: 124
+VI WARNING: __vblank_interrupt outside of vblank period: 498
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+M6c,00280000,rdp_fill,0,0,92209.4,00280000,00003203
+M6c,# done
+M9,spfloor,len,delay_iters,dmas,win_us,ns_per_dma,MBps
+VI WARNING: __vblank_interrupt outside of vblank period: 244
+VI WARNING: __vblank_interrupt outside of vblank period: 462
+VI WARNING: __vblank_interrupt outside of vblank period: 50
+VI WARNING: __vblank_interrupt outside of vblank period: 268
+VI WARNING: __vblank_interrupt outside of vblank period: 482
+M9,spfloor,64,0,52368,25000.2,477.4,134.06
+VI WARNING: __vblank_interrupt outside of vblank period: 118
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 546
+VI WARNING: __vblank_interrupt outside of vblank period: 134
+VI WARNING: __vblank_interrupt outside of vblank period: 350
+M9,spfloor,64,1,49735,25000.1,502.7,127.32
+VI WARNING: __vblank_interrupt outside of vblank period: 612
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+VI WARNING: __vblank_interrupt outside of vblank period: 246
+VI WARNING: __vblank_interrupt outside of vblank period: 460
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+M9,spfloor,64,2,42194,25000.1,592.5,108.02
+VI WARNING: __vblank_interrupt outside of vblank period: 524
+VI WARNING: __vblank_interrupt outside of vblank period: 114
+VI WARNING: __vblank_interrupt outside of vblank period: 328
+VI WARNING: __vblank_interrupt outside of vblank period: 542
+VI WARNING: __vblank_interrupt outside of vblank period: 130
+M9,spfloor,64,4,33929,25000.1,736.8,86.86
+VI WARNING: __vblank_interrupt outside of vblank period: 392
+VI WARNING: __vblank_interrupt outside of vblank period: 606
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 240
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+VI WARNING: __vblank_interrupt outside of vblank period: 42
+M9,spfloor,64,8,23669,25000.1,1056.2,60.59
+VI WARNING: __vblank_interrupt outside of vblank period: 304
+VI WARNING: __vblank_interrupt outside of vblank period: 518
+VI WARNING: __vblank_interrupt outside of vblank period: 106
+VI WARNING: __vblank_interrupt outside of vblank period: 322
+VI WARNING: __vblank_interrupt outside of vblank period: 536
+M9,spfloor,64,16,14740,25000.1,1696.0,37.74
+VI WARNING: __vblank_interrupt outside of vblank period: 172
+VI WARNING: __vblank_interrupt outside of vblank period: 388
+VI WARNING: __vblank_interrupt outside of vblank period: 602
+VI WARNING: __vblank_interrupt outside of vblank period: 18
+VI WARNING: __vblank_interrupt outside of vblank period: 234
+VI WARNING: __vblank_interrupt outside of vblank period: 450
+M9,spfloor,64,32,8401,25000.1,2975.9,21.51
+VI WARNING: __vblank_interrupt outside of vblank period: 86
+VI WARNING: __vblank_interrupt outside of vblank period: 304
+VI WARNING: __vblank_interrupt outside of vblank period: 522
+VI WARNING: __vblank_interrupt outside of vblank period: 114
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+M9,spfloor,128,0,52257,25000.3,478.4,267.55
+VI WARNING: __vblank_interrupt outside of vblank period: 598
+VI WARNING: __vblank_interrupt outside of vblank period: 14
+VI WARNING: __vblank_interrupt outside of vblank period: 230
+VI WARNING: __vblank_interrupt outside of vblank period: 448
+VI WARNING: __vblank_interrupt outside of vblank period: 40
+VI WARNING: __vblank_interrupt outside of vblank period: 254
+M9,spfloor,128,1,45841,25000.1,545.4,234.71
+VI WARNING: __vblank_interrupt outside of vblank period: 516
+VI WARNING: __vblank_interrupt outside of vblank period: 108
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 540
+VI WARNING: __vblank_interrupt outside of vblank period: 132
+M9,spfloor,128,2,40039,25000.1,624.4,205.00
+VI WARNING: __vblank_interrupt outside of vblank period: 394
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 242
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+VI WARNING: __vblank_interrupt outside of vblank period: 48
+M9,spfloor,128,4,33226,25000.1,752.4,170.12
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 528
+VI WARNING: __vblank_interrupt outside of vblank period: 116
+VI WARNING: __vblank_interrupt outside of vblank period: 330
+VI WARNING: __vblank_interrupt outside of vblank period: 544
+M9,spfloor,128,8,23657,25000.1,1056.8,121.12
+VI WARNING: __vblank_interrupt outside of vblank period: 180
+VI WARNING: __vblank_interrupt outside of vblank period: 396
+VI WARNING: __vblank_interrupt outside of vblank period: 610
+VI WARNING: __vblank_interrupt outside of vblank period: 26
+VI WARNING: __vblank_interrupt outside of vblank period: 242
+VI WARNING: __vblank_interrupt outside of vblank period: 458
+M9,spfloor,128,16,14739,25000.1,1696.2,75.46
+VI WARNING: __vblank_interrupt outside of vblank period: 94
+VI WARNING: __vblank_interrupt outside of vblank period: 310
+VI WARNING: __vblank_interrupt outside of vblank period: 524
+VI WARNING: __vblank_interrupt outside of vblank period: 112
+VI WARNING: __vblank_interrupt outside of vblank period: 328
+M9,spfloor,128,32,8401,25000.1,2975.9,43.01
+VI WARNING: __vblank_interrupt outside of vblank period: 590
+VI WARNING: __vblank_interrupt outside of vblank period: 184
+VI WARNING: __vblank_interrupt outside of vblank period: 400
+VI WARNING: __vblank_interrupt outside of vblank period: 620
+VI WARNING: __vblank_interrupt outside of vblank period: 38
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+M9,spfloor,512,0,18587,25000.1,1345.0,380.66
+VI WARNING: __vblank_interrupt outside of vblank period: 520
+VI WARNING: __vblank_interrupt outside of vblank period: 114
+VI WARNING: __vblank_interrupt outside of vblank period: 332
+VI WARNING: __vblank_interrupt outside of vblank period: 550
+VI WARNING: __vblank_interrupt outside of vblank period: 142
+M9,spfloor,512,4,18617,25000.2,1342.8,381.28
+VI WARNING: __vblank_interrupt outside of vblank period: 408
+VI WARNING: __vblank_interrupt outside of vblank period: 174
+VI WARNING: __vblank_interrupt outside of vblank period: 390
+VI WARNING: __vblank_interrupt outside of vblank period: 608
+VI WARNING: __vblank_interrupt outside of vblank period: 28
+M9,spfloor,512,16,14598,25000.1,1712.6,298.96
+VI WARNING: __vblank_interrupt outside of vblank period: 292
+VI WARNING: __vblank_interrupt outside of vblank period: 506
+VI WARNING: __vblank_interrupt outside of vblank period: 98
+VI WARNING: __vblank_interrupt outside of vblank period: 314
+VI WARNING: __vblank_interrupt outside of vblank period: 532
+M9,spfloor,512,32,8401,25000.1,2976.0,172.04
+M9,wb,cell,lines,ticks_min,ns_per_line_min,ns_per_line_mean,rdp_alone_us,rdp_us_mean,rdp_started,rdp_busy_after
+M9,wb,cdirty8k,32768,65965,42.9,43.0,0.0,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 24
+VI WARNING: __vblank_interrupt outside of vblank period: 136
+M9,wb,cwb8k,32768,439215,285.9,288.0,0.0,0.0,0,0
+M9,wb,writeback_alone,32768,373250,243.0,245.0,0,0,0,0
+M9,wb,cdirty8k+rdp,32768,66019,43.0,43.0,84838.7,84941.3,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 256
+VI WARNING: __vblank_interrupt outside of vblank period: 88
+VI WARNING: __vblank_interrupt outside of vblank period: 318
+M9,wb,cwb8k+rdp,32768,573781,373.6,374.8,84838.7,85780.2,5,5
+M9,wb,writeback_alone+rdp,32768,507762,330.6,331.8,0,0,0,0
+M9,ai,cell,accesses,cpu_ns_min,cpu_ns_mean,rdp_alone_us,rdp_us_mean,ai_status_before,ai_status_after,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 70
+VI WARNING: __vblank_interrupt outside of vblank period: 276
+VI WARNING: __vblank_interrupt outside of vblank period: 480
+VI WARNING: __vblank_interrupt outside of vblank period: 54
+VI WARNING: __vblank_interrupt outside of vblank period: 258
+M9,ai,u32r,65536,382.4,383.3,0.0,0.0,00000000,00000000,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 572
+VI WARNING: __vblank_interrupt outside of vblank period: 158
+VI WARNING: __vblank_interrupt outside of vblank period: 372
+VI WARNING: __vblank_interrupt outside of vblank period: 594
+VI WARNING: __vblank_interrupt outside of vblank period: 12
+VI WARNING: __vblank_interrupt outside of vblank period: 228
+M9,ai,u32r+ai,65536,384.0,385.2,0.0,0.0,c3d10443,43d1006a,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 128
+M9,ai,cr16,16384,423.9,428.6,0.0,0.0,00000000,00000000,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 146
+VI WARNING: __vblank_interrupt outside of vblank period: 102
+VI WARNING: __vblank_interrupt outside of vblank period: 56
+M9,ai,cr16+ai,16384,423.8,427.1,0.0,0.0,c3f80249,c3f0039f,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 336
+M9,ai,u32w,65536,192.1,192.9,0.0,0.0,00000000,00000000,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 214
+VI WARNING: __vblank_interrupt outside of vblank period: 36
+VI WARNING: __vblank_interrupt outside of vblank period: 252
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+M9,ai,u32w+ai,65536,192.1,192.6,0.0,0.0,c3f80325,43d0005a,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 324
+VI WARNING: __vblank_interrupt outside of vblank period: 486
+VI WARNING: __vblank_interrupt outside of vblank period: 22
+VI WARNING: __vblank_interrupt outside of vblank period: 168
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+M9,ai,rdp,0,0.0,0.0,84838.7,84998.5,00000000,00000000,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 566
+VI WARNING: __vblank_interrupt outside of vblank period: 126
+VI WARNING: __vblank_interrupt outside of vblank period: 308
+VI WARNING: __vblank_interrupt outside of vblank period: 494
+VI WARNING: __vblank_interrupt outside of vblank period: 62
+M9,ai,rdp+ai,0,0.0,0.0,84838.7,85278.4,c3d00097,43f0020e,5,5
+M9,# done
+M4,cell,cpu_ns_min,cpu_ns_mean,rdp_us_min,rdp_started,rdp_busy_after
+VI WARNING: __vblank_interrupt outside of vblank period: 262
+VI WARNING: __vblank_interrupt outside of vblank period: 468
+VI WARNING: __vblank_interrupt outside of vblank period: 44
+VI WARNING: __vblank_interrupt outside of vblank period: 250
+VI WARNING: __vblank_interrupt outside of vblank period: 454
+M4,cpu_rspq_idle,382.5,383.5,0.0,0,0
+VI WARNING: __vblank_interrupt outside of vblank period: 72
+VI WARNING: __vblank_interrupt outside of vblank period: 222
+VI WARNING: __vblank_interrupt outside of vblank period: 374
+VI WARNING: __vblank_interrupt outside of vblank period: 526
+VI WARNING: __vblank_interrupt outside of vblank period: 52
+M4,rspq_fill_alone,0.0,0.0,84801.8,5,5
+VI WARNING: __vblank_interrupt outside of vblank period: 312
+VI WARNING: __vblank_interrupt outside of vblank period: 66
+VI WARNING: __vblank_interrupt outside of vblank period: 448
+VI WARNING: __vblank_interrupt outside of vblank period: 204
+VI WARNING: __vblank_interrupt outside of vblank period: 586
+M4,cpu+rspq_fill,412.3,413.0,92190.9,5,5
+M4,# done
+[Debug]: Stopped
