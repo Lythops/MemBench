@@ -64,8 +64,8 @@ the window outlasted the pass.
 
 ## Build and run
 
-    /c/msys64/usr/bin/bash -lc "/c/Nintendo64/MemBench/build.sh"
-    /c/Nintendo64/tools/flash.sh -d --secs 200 membench.z64 > raw/hw-<date>.log
+    /msys64/usr/bin/bash -lc "/MemBench/build.sh"
+    /tools/flash.sh -d --secs 200 membench.z64 > raw/hw-<date>.log
     grep -E '^M[B2-9][bc]?,' raw/hw-<date>.log > results-hw-<date>.csv
 
 Press Reset promptly after the upload: an SC64 upload does not restart the
